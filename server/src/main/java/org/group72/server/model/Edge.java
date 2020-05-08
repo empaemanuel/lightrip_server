@@ -9,46 +9,31 @@ import javax.persistence.*;
  * @author Emil.M
  */
 @Entity
-@IdClass(EdgeKey.class)
 public class Edge {
 
     @Id
-    private double latitude_A;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
-    @Id
-    private double longitude_A;
+    @ManyToOne
+    private Node node1;
 
-    @Id
-    private double latitude_B;
+    @ManyToOne
+    private Node node2;
 
-    @Id
-    private double longitude_B;
+    /**
+     * Distance in meters.
+     */
+    private int distance;
 
     //Required by JPA.
     public Edge() {
     }
 
-    public Edge(double latitude_A, double longitude_A, double latitude_B, double longitude_B){
-        this.latitude_A = latitude_A;
-        this.longitude_A = longitude_A;
-        this.latitude_B = latitude_B;
-        this.longitude_B = longitude_B;
-    }
 
-    public double getLatitude_A() {
-        return latitude_A;
-    }
-
-    public double getLongitude_A() {
-        return longitude_A;
-    }
-
-    public double getLatitude_B() {
-        return latitude_B;
-    }
-
-    public double getLongitude_B() {
-        return longitude_B;
+    public Edge(Node n1, Node n2){
+        this.node1 = n1;
+        this.node2 = n2;
     }
 
     /**
@@ -66,5 +51,14 @@ public class Edge {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = radius * c;
         return (int) d * 1000; // meters
+    }
+
+
+    public Node getNode1() {
+        return node1;
+    }
+
+    public Node getNode2() {
+        return node2;
     }
 }

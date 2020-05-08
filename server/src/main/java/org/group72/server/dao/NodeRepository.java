@@ -8,25 +8,16 @@
 
 
 
-//package org.group72.server.dao;
-//
-//import org.springframework.data.repository.CrudRepository;
-//
-//public interface NodeRepository extends CrudRepository<Node, Double> {
-//
-////    @Query("SELECT n FROM Node n WHERE n.id = 13218186")
-////    Iterable<Node> getNodesA();
-////
-////    @Query("SELECT n FROM Node n WHERE n.id > 13218180")
-////    Iterable<Node> getNodesB();
-////
-////    @Query("SELECT n.longitude FROM Node n WHERE n.latitude = 59.3098 and n.longitude = 18.0922")
-////    Iterable<Node> getNodesC();
-////
-////    @Query("SELECT n FROM Node n WHERE n.longitude = :longitude and n.latitude = :latitude")
-////    Node getNode(@Param("longitude") double longitude, @Param("latitude") double latitude);
-////
-////    @Query("SELECT n FROM Node n WHERE n.id = :id")
-////    Node getNode(@Param("id") int id);
-//
-//}
+package org.group72.server.dao;
+
+import org.group72.server.model.Node;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+public interface NodeRepository extends CrudRepository<Node, Double> {
+
+    @Query("SELECT n FROM Node n WHERE n.latitude = :latitude and n.longitude = :longitude ")
+    Node getNode(@Param("latitude") double latitude, @Param("longitude") double longitude);
+
+}
