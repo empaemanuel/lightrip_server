@@ -1,14 +1,21 @@
 package org.group72.server.controller;
 
+import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
+import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
+import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * This class handles incoming requests regarding generation, viewing and storing routes
@@ -21,28 +28,95 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RouteController {
     @Autowired
     private EdgeRepository edgeRepository;
+    @Autowired
+    private NodeRepository nodeRepository;
 
     /**
      * A demo route manually created.
      * @return An array of edges as JSON.
      */
     @GetMapping(path = "/demo")
-    public @ResponseBody JSONArray demo(){
+    public @ResponseBody JSONObject demo(){
 
-        JSONArray tmp = new JSONArray();
+        JSONObject response = new JSONObject();
+        response.appendField("user" , "The ID token can be sent here");
+
+        JSONArray route = new JSONArray();
         //59.3121417  18.0911303 -> 59.3123095 18.0912094
-        Edge e = edgeRepository.getEdge(59.3121417,18.0911303 ,59.3123095, 18.0912094);
-        tmp.appendElement(e);
-        e = edgeRepository.getEdge(e.getLatitude_B(), e.getLongitude_B(), 59.3126612, 18.0913751);
-        tmp.appendElement(e);
-        e = edgeRepository.getEdge(59.3126381, 18.0915173, e.getLatitude_B(), e.getLongitude_B() );
-        tmp.appendElement(e);
-        e = edgeRepository.getEdge( 59.312634, 18.0916134, e.getLatitude_A(), e.getLongitude_A());
-        tmp.appendElement(e);
-        e = edgeRepository.getEdge(59.3126498, 18.0916942, e.getLatitude_A(), e.getLongitude_A());
-        tmp.appendElement(e);
+        Node n = nodeRepository.getNode(59.3121417,18.0911303);
+        route.appendElement(n);
 
-        return tmp;
+        n = nodeRepository.getNode(59.3123095, 18.0912094);
+        route.appendElement(n);
+
+        n = nodeRepository.getNode(59.3126612, 18.0913751);
+        route.appendElement(n);
+
+        n = nodeRepository.getNode(59.3126381, 18.0915173);
+        route.appendElement(n);
+
+        n = nodeRepository.getNode(59.312634, 18.0916134);
+        route.appendElement(n);
+
+        n = nodeRepository.getNode(59.3126498, 18.0916942);
+        route.appendElement(n);
+
+        response.appendField("route", route);
+        response.appendField("distance", 130);
+
+        return response;
+    }
+
+
+    /**
+     * SHOULD BE REMOVED OR HIDDEN BEFORE RELEASE.
+     * Script used for populating the database with edges.
+     * @return simple message to indicate when the script is done.
+     */
+//    @GetMapping(path="/populate")
+//    public @ResponseBody String populate() {
+//        populateDatabase();
+//        return "done";
+//    }
+
+    private void populateDatabase(){
+        String filePath = "/Users/earth/Desktop/Projects/Java/Projects/pvtGroup72/server/src/main/resources/vitaberglinjer.list";
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            while(line != null){
+                extractPositionsFromJson(line);
+                line = reader.readLine(); //moves to next line
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Extracts a list of geo positions from single JSON structure.
+     */
+
+
+    private void extractPositionsFromJson(String json){
+        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
+
+        Node prev = null;
+        for(int i=0; i < points.size(); i++) {
+            JSONArray point = (JSONArray) points.get(i);
+            double longitude = (double) point.get(0);
+            double latitude = (double) point.get(1);
+
+            Node n = new Node(latitude,longitude);
+            nodeRepository.save(n);
+            if(prev!=null){
+                Edge e = new Edge(prev, n);
+                edgeRepository.save(e);
+            }
+            prev = n;
+        }
     }
 
 }
