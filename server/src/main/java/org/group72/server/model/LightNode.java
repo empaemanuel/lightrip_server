@@ -31,6 +31,20 @@ public class LightNode {
 		this.type = type;
 	}
 
+	@JsonProperty("geometry")
+	@ManyToOne
+	private Geometry geometry;
+	
+	@JsonProperty("geometry")
+	public Geometry getGeometry() {
+		return geometry;
+	}
+
+	@JsonProperty("geometry")
+	public void setGeometry(Geometry geometry) {
+		this.geometry = geometry;
+	}
+	
 //	@JsonProperty("properties")
 //	public Properties getProperties() {
 //		return properties;
