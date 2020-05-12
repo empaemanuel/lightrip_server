@@ -6,6 +6,12 @@ import org.group72.server.model.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 /**
  * This class defines the API for handling CRUD requests
@@ -37,4 +43,18 @@ public class LightController {
     }
 
 
+    @RequestMapping(path="/illuminate")
+    public @ResponseBody String illuminate(){
+		ObjectMapper mapper = new ObjectMapper();
+		TypeReference<List<LightNode>> typeReference = new TypeReference<List<LightNode>>(){};
+		InputStream inputStream = TypeReference.class.getResourceAsStream("C:/Users/Idaso/Documents/vitabergbelysning.json");
+		try {
+			List<LightNode> lights = mapper.readValue(inputStream,typeReference);
+			lightRepository.saveAll(lights);
+		} catch (IOException e){
+			System.out.println("Unable to save users: " + e.getMessage());
+		}
+		return "Saved lights!";
+    }
+    
 }

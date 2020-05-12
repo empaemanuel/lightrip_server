@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.persistence.*;
+import java.util.Iterator;
 import org.group72.server.model.Geometry;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "geometry" })
 @Entity
-public class LightNode {
+public class LightNode implements Iterable<LightNode>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -29,6 +30,12 @@ public class LightNode {
 	public void setGeometry(Geometry geometry) {
 		this.geometry = geometry;
 	}
+	
+	@Override
+	public Iterator<LightNode> iterator() { 
+		return iterator(); 
+		}
+
 	
 //	@JsonProperty("properties")
 //	public Properties getProperties() {
