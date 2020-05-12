@@ -11,12 +11,16 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class MainController {
 
-    private static final String template = "Hello, %s!";
+    private static final String template = "Greetings, %s!";
     private static final AtomicLong counter = new AtomicLong();
 
     @GetMapping(path="/hello")
     public @ResponseBody Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
+    }
+    @GetMapping(path="/")
+    public @ResponseBody String homePage() {
+        return "/route/demo";
     }
 
 }
