@@ -47,7 +47,7 @@ public class LightController {
     }
 
 
-    @PostMapping(path="/illuminate")
+    @GetMapping(path="/illuminate")
     public @ResponseBody String illuminate(){
     	enlighten();
 //		ObjectMapper mapper = new ObjectMapper();
