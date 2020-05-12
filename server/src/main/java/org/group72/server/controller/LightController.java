@@ -20,12 +20,11 @@ public class LightController {
 
     @PostMapping(path="/addLight") // Map ONLY POST Requests
     public @ResponseBody
-    String addNewlight (@RequestParam String type, @RequestParam Geometry geometry) {
+    String addNewlight (@RequestParam Geometry geometry) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
         LightNode l = new LightNode();
-        l.setType(type);
         l.setGeometry(geometry);
         lightRepository.save(l);
         return "Saved light";
