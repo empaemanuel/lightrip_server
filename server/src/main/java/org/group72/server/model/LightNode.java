@@ -9,27 +9,12 @@ import org.group72.server.model.Geometry;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "type", "geometry" })
+@JsonPropertyOrder({ "geometry" })
 @Entity
 public class LightNode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-	
-	@JsonProperty("type")
-	private String type;
-//	@JsonProperty("properties")
-//	private Properties properties;
-
-	@JsonProperty("type")
-	public String getType() {
-		return type;
-	}
-
-	@JsonProperty("type")
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	@JsonProperty("geometry")
 	@ManyToOne
