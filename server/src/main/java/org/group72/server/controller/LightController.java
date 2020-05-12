@@ -43,7 +43,7 @@ public class LightController {
     }
 
 
-    @RequestMapping(path="/illuminate")
+    @PostMapping(path="/illuminate")
     public @ResponseBody String illuminate(){
 		ObjectMapper mapper = new ObjectMapper();
 		TypeReference<List<LightNode>> typeReference = new TypeReference<List<LightNode>>(){};
