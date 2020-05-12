@@ -6,11 +6,15 @@ import org.group72.server.model.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import java.io.InputStream;
+import java.util.ArrayList;
+//import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -45,16 +49,58 @@ public class LightController {
 
     @PostMapping(path="/illuminate")
     public @ResponseBody String illuminate(){
-		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<List<LightNode>> typeReference = new TypeReference<List<LightNode>>(){};
-		InputStream inputStream = TypeReference.class.getResourceAsStream("C:/Users/Idaso/Documents/vitabergbelysning.json");
-		try {
-			List<LightNode> lights = mapper.readValue(inputStream,typeReference);
-			lightRepository.saveAll(lights);
-		} catch (IOException e){
-			System.out.println("Unable to save users: " + e.getMessage());
-		}
+    	enlighten();
+//		ObjectMapper mapper = new ObjectMapper();
+//		TypeReference<List<LightNode>> typeReference = new TypeReference<List<LightNode>>(){};
+//		InputStream inputStream = TypeReference.class.getResourceAsStream("C:/Users/Idaso/Documents/vitabergbelysning.json");
+//		try {
+//			List<LightNode> lights = mapper.readValue(inputStream,typeReference);
+//			lightRepository.saveAll(lights);
+//		} catch (IOException e){
+//			System.out.println("Unable to save users: " + e.getMessage());
+//		}
 		return "Saved lights!";
     }
+    
+    private void enlighten(){
+        String filePath = "/Users/idaso/documents/vitabergbelysning.json";
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            while(line != null){
+                extractPositionsFromJson(line);
+                line = reader.readLine(); //moves to next line
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Extracts a list of geo positions from single JSON structure.
+     */
+
+
+    private void extractPositionsFromJson(String json){
+        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
+
+        for(int i=0; i < points.size(); i++) {
+            JSONArray point = (JSONArray) points.get(i);
+            double longitude = (double) point.get(0);
+            double latitude = (double) point.get(1);
+            
+            ArrayList<Double> list = new ArrayList<Double>();
+            list.add(longitude);
+            list.add(latitude);
+            Geometry g = new Geometry();
+            g.setCoordinates(list);
+            LightNode l = new LightNode();
+            l.setGeometry(g);
+            lightRepository.save(l);
+        }
+    }
+
     
 }
