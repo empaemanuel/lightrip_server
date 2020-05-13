@@ -11,11 +11,11 @@ To generate a static demo route:
 /route/demo
 
 To generate a route: (under development)
-/route/generate?fromLat=<latitude>&fromLon=<longitude>&toLat=<latitude>&toLon=<longitude> 
+/route/generate?fromLat=latitude&fromLon=longitude&toLat=latitude&toLon=longitude
 
 # Users (under development)
 To store a user:
-/user/add?name=<name>&email=<email>
+/user/add?name=name&email=email
 
 To show all users:
 /user/all
