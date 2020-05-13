@@ -1,3 +1,3 @@
-Generate route
+API Generate route
 
 /route/demo
