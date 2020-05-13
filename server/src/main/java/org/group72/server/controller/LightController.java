@@ -1,40 +1,28 @@
 package org.group72.server.controller;
 
+import net.minidev.json.JSONObject;
 import org.group72.server.dao.LightRepository;
 import org.group72.server.model.LightNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.jayway.jsonpath.JsonPath;
-import net.minidev.json.JSONArray;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-//import java.io.InputStream;
-import java.util.ArrayList;
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 /**
  * This class defines the API for handling CRUD requests
  * of Lights.
  */
+
 @Controller
 @RequestMapping(path="/light")
 public class LightController {
     @Autowired
     private LightRepository lightRepository;
 
-    @PostMapping(path="/addLight") // Map ONLY POST Requests
-    public @ResponseBody
-    String addNewlight (@RequestParam Double latitude, Double longitude) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        LightNode l = new LightNode(latitude, longitude);
-        lightRepository.save(l);
-        return "Saved light";
+    @GetMapping(path="/showSingle")
+    public @ResponseBody JSONObject getLightNode(){
+        JSONObject jo = new JSONObject();
+        jo.appendField("light" , lightRepository.getLightNode(59.3080706,18.0896543));
+        return jo;
     }
 
     @GetMapping(path="/allLights")
@@ -43,47 +31,4 @@ public class LightController {
         return lightRepository.findAll();
     }
 
-
-    @GetMapping(path="/illuminate")
-    public @ResponseBody String illuminate(){
-    	enlighten();
-		return "Saved lights!";
-    }
-    
-    private void enlighten(){
-        String filePath = "/Users/idaso/documents/vitabergbelysning.list";
-
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine();
-            while(line != null){
-                extractPositionsFromJson(line);
-                line = reader.readLine(); //moves to next line
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Extracts a list of geo positions from single JSON structure.
-     */
-
-
-    private void extractPositionsFromJson(String json){
-        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
-
-        for(int i=0; i < points.size(); i++) {
-            JSONArray point = (JSONArray) points.get(i);
-            double longitude = (double) point.get(0);
-            double latitude = (double) point.get(1);
-            
-            LightNode l = new LightNode(latitude, longitude);
-            
-            lightRepository.save(l);
-        }
-    }
-
-    
 }

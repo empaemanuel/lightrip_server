@@ -1,0 +1,36 @@
+
+//    @GetMapping(path="/illuminate")
+       //    public @ResponseBody String illuminate(){
+       //    	enlighten();
+       //		return "Saved lights!";
+       //    }
+
+    private void enlighten(){
+        String filePath = "vitabergbelysning.list";
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            while(line != null){
+                extractPositionsFromJson(line);
+                line = reader.readLine(); //moves to next line
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Extracts a list of geo positions from single JSON structure.
+     */
+
+
+    private void extractPositionsFromJson(String json){
+        JSONArray light = JsonPath.read(json, "$.geometry.coordinates");
+        double longitude = (double) light.get(0);
+        double latitude = (double) light.get(1);
+
+        LightNode l = new LightNode(latitude, longitude);
+        lightRepository.save(l);
+    }
