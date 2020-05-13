@@ -1,0 +1,6 @@
+language: java
+
+deploy:
+  provider: heroku
+  api_key: ecf1eba4-ae17-42a0-a1d0-6ed6a20e4721
+  app: lightripServer
