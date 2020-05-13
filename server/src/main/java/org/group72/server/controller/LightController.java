@@ -2,7 +2,6 @@ package org.group72.server.controller;
 
 import org.group72.server.dao.LightRepository;
 import org.group72.server.model.LightNode;
-import org.group72.server.model.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +28,11 @@ public class LightController {
 
     @PostMapping(path="/addLight") // Map ONLY POST Requests
     public @ResponseBody
-    String addNewlight (@RequestParam Geometry geometry) {
+    String addNewlight (@RequestParam Double latitude, Double longitude) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
-        LightNode l = new LightNode();
-        l.setGeometry(geometry);
+        LightNode l = new LightNode(latitude, longitude);
         lightRepository.save(l);
         return "Saved light";
     }

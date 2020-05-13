@@ -6,8 +6,6 @@
  */
 
 
-
-
 package org.group72.server.dao;
 
 import org.group72.server.model.Node;

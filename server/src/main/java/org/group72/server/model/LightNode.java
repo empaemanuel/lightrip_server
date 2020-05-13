@@ -5,13 +5,16 @@ import javax.persistence.*;
 
 @Entity
 @IdClass(NodeKey.class)
-public class Node {
+public class LightNode {
 
     @Id
     private double latitude;
 
     @Id
     private double longitude;
+    
+    public LightNode() {
+    }
 
     public double getLatitude() {
         return latitude;
