@@ -41,6 +41,8 @@ public class Edge {
      * as a positive value in meters.
      * @return double distance in meters
      */
+    
+    /*
     private static int calculateDistace(double lat1, double lon1, double lat2, double lon2){
         double radius = 6378.137; // Radius of earth in KM
         double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
@@ -52,7 +54,16 @@ public class Edge {
         double d = radius * c;
         return (int) d * 1000; // meters
     }
+*/
+    
+    //Returnerar ett heltal för distans i meter.
+    public int calculateDistance() {
+    return (int) Math.round(calculateDistance(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude()));
+    }
 
+    private double calculateDistance(double lat1, double long1, double lat2, double long2) {
+    return org.apache.lucene.util.SloppyMath.haversinMeters(lat1, long1, lat2, long2);
+    }
 
     public Node getNode1() {
         return node1;
