@@ -20,7 +20,7 @@ public class MainController {
     }
     @GetMapping(path="/")
     public @ResponseBody String homePage() {
-        return "/route/demo";
+        return "Greetings from lightrip server!";
     }
 
 }
