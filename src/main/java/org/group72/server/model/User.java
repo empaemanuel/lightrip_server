@@ -15,8 +15,14 @@ public class User {
 
     private String email;
 
+    private Route[] routes;
+
     public Integer getId() {
         return id;
+    }
+
+    public Array<Route> getRoutes() {
+        return routes;
     }
 
     public void setId(Integer id) {
@@ -37,5 +43,9 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void addRoute(Route route) {
+        routes.append(route);
     }
 }
