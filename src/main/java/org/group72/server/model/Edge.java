@@ -66,26 +66,26 @@ public class Edge {
         return (int) Math.round(calculateDistance(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude()));
     }
 
-    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000;
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-        return earthRadius * c;
-    }
+//    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+//        double earthRadius = 6371000;
+//        double dLat = Math.toRadians(lat2-lat1);
+//        double dLng = Math.toRadians(lng2-lng1);
+//        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+//                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+//                        Math.sin(dLng/2) * Math.sin(dLng/2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//
+//        return earthRadius * c;
+//    }
 
 
 //    public int calculateDistanceH() {
 //        return (int) Math.round(calculateDistanceH(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude()));
 //    }
 //
-//    private double calculateDistanceH(double lat1, double long1, double lat2, double long2) {
-//        return org.apache.lucene.util.SloppyMath.haversinMeters(lat1, long1, lat2, long2);
-//    }
+    private double calculateDistance(double lat1, double long1, double lat2, double long2) {
+        return org.apache.lucene.util.SloppyMath.haversinMeters(lat1, long1, lat2, long2);
+    }
 
     public Node getNode1() {
         return node1;
