@@ -1,12 +1,6 @@
 package org.group72.server.model;
 
-import net.minidev.json.JSONArray;
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.UUID;
 /**
 *
@@ -25,9 +19,13 @@ public class Route{
 
     @ManyToOne
     private User user;
+    //Klagar på JSONarray. Tror det generellt inte är super bra att spara hela arrayer i en cell i en kolumn
+    //men om vi vill göra det så behöver vi komma på någon annan lösning, kanske kovertera JSON arrayerna
+    // till en strängar?? Emil
 //    private JSONArray MaxLightRoute;
 //    private JSONArray MedLightRoute;
 //    private JSONArray MinLightRoute;
+
     @ManyToOne
     private Edge startEdge;
     @ManyToOne
@@ -39,7 +37,7 @@ public class Route{
         calculateRoute();
     }
 
-    //Require by JPA
+    //Krävs av JPA för att kunna kompilera
     public Route(){ }
 
     public long getId() {

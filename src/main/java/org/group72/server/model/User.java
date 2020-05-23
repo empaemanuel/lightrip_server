@@ -15,15 +15,17 @@ public class User {
 
     private String email;
 
-    private Route[] routes;
+    //Nog inte så bra ide att spara denna här eftersom routes redan finns sparade i Route tabellen
+    // ihop med användaren. //Emil
+//    private Route[] routes;
 
     public Integer getId() {
         return id;
     }
 
-    public Array<Route> getRoutes() {
-        return routes;
-    }
+//    public Array<Route> getRoutes() {
+//        return routes;
+//    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -45,7 +47,7 @@ public class User {
         this.email = email;
     }
 
-    public void addRoute(Route route) {
-        routes.append(route);
-    }
+//    public void addRoute(Route route) {
+//        routes.append(route);
+//    }
 }
