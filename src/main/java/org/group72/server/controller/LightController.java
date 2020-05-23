@@ -19,19 +19,24 @@ import java.util.List;
 @RequestMapping(path="/light")
 public class LightController {
     @Autowired
-    private static LightRepository lightRepository;
-
-    @GetMapping(path="/showSingle")
-    public @ResponseBody JSONObject getLightNode(){
-        JSONObject jo = new JSONObject();
-        jo.appendField("light" , lightRepository.getLightNode(59.3080706,18.0896543));
-        return jo;
-    }
+    private LightRepository lightRepository;
+//
+//    @GetMapping(path="/showSingle")
+//    public @ResponseBody JSONObject getLightNode(){
+//        JSONObject jo = new JSONObject();
+//        jo.appendField("light" , lightRepository.getLightNode(59.3080706,18.0896543));
+//        return jo;
+//    }
 
     @GetMapping(path="/allLights")
     public @ResponseBody Iterable<LightNode> getAllLights() {
         // This returns a JSON or XML with the users
         return lightRepository.findAll();
+    }
+
+    public LightNode getLightNode(double latitude, double longitude){
+        LightNode ln = lightRepository.getLightNode(latitude, longitude);
+        return ln;
     }
 
     @GetMapping(path="/someLights")
@@ -41,9 +46,12 @@ public class LightController {
         jo.appendField("lights: ", lightList);
         return jo;
     }
+
+
+
     //node1 bottom left corner, node2 top right corner
-    public static List<LightNode> getSpecificLights(Node node1, Node node2){
-        return lightRepository.getLightNodes(node1.getLatitude(),node1.getLongitude(), node2.getLatitude(), node2.getLongitude());
+    public List<LightNode> getSpecificLights(double latitudeA, double longitudeA, double latitudeB, double longitudeB){
+       return lightRepository.getLightNodes(latitudeA, longitudeA, latitudeB, longitudeB);
     }
 
 }

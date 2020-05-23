@@ -24,14 +24,14 @@ public class EdgeTest {
         assertEquals(18.090316, edge.getNode2().getLongitude());
     }
 
-    @Test
-    public void testGetNumberOfLightNodes(){
-        Node node1 = new Node(59.313670, 18.090316);
-        Node node2 = new Node(59.312827, 18.090316);
-        Edge edge = new Edge(node1, node2);
-        int numberOfLights = edge.getNumberOfLightNodes();
-        assertEquals(50, numberOfLights);
-    }
+//    @Test
+//    public void testGetNumberOfLightNodes(){
+//        Node node1 = new Node(59.313670, 18.090316);
+//        Node node2 = new Node(59.312827, 18.090316);
+//        Edge edge = new Edge(node1, node2);
+//        int numberOfLights = edge.getNumberOfLightNodes();
+//        assertEquals(50, numberOfLights);
+//    }
 
 
 }
