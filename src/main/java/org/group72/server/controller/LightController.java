@@ -20,13 +20,13 @@ import java.util.List;
 public class LightController {
     @Autowired
     private LightRepository lightRepository;
-//
-//    @GetMapping(path="/showSingle")
-//    public @ResponseBody JSONObject getLightNode(){
-//        JSONObject jo = new JSONObject();
-//        jo.appendField("light" , lightRepository.getLightNode(59.3080706,18.0896543));
-//        return jo;
-//    }
+
+    @GetMapping(path="/showSingle")
+    public @ResponseBody JSONObject getLightNode(){
+        JSONObject jo = new JSONObject();
+        jo.appendField("light" , lightRepository.getLightNode(59.3080706,18.0896543));
+        return jo;
+    }
 
     @GetMapping(path="/allLights")
     public @ResponseBody Iterable<LightNode> getAllLights() {
@@ -50,8 +50,8 @@ public class LightController {
 
 
     //node1 bottom left corner, node2 top right corner
-    public List<LightNode> getSpecificLights(double latitudeA, double longitudeA, double latitudeB, double longitudeB){
-       return lightRepository.getLightNodes(latitudeA, longitudeA, latitudeB, longitudeB);
+    public List<LightNode> getSpecificLights(Node node1, Node node2){
+        return lightRepository.getLightNodes(node1.getLatitude(),node1.getLongitude(), node2.getLatitude(), node2.getLongitude());
     }
 
 }
