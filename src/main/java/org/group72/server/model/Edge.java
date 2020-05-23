@@ -30,8 +30,8 @@ public class Edge {
     @ManyToOne
     private Node node2;
 
-    @Autowired
-    private LightRepository lightRepository;
+//    @Autowired
+//    private LightRepository lightRepository;
 
     /**
      * Distance in meters.
@@ -109,7 +109,7 @@ public class Edge {
         }
 
         for(int j = 0; j<pointList.size(); j++){
-            sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
+ //           sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
         }
 
 
