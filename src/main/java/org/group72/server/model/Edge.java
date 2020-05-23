@@ -94,6 +94,7 @@ public class Edge {
 
         //List<LightNode> nodeList = lightRepository.getLightNodes(59.312630, 18.086975, 59.313380, 18.087276);
         //return nodeList.size();
+        LightController lightController = new LightController();
         int sumOfLights = 0;
         double tempMetersInLatLong = 0.0002;
         int metersPerRectangle = 10;
@@ -112,7 +113,7 @@ public class Edge {
         for(int j = 0; j<pointList.size(); j++){
             Node node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left
             Node node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right
-            sumOfLights += LightController.getSpecificLights(node1, node2).size();
+            sumOfLights += lightController.getSpecificLights(node1, node2).size();
           //  sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
         }
 
