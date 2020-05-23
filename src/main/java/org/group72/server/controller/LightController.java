@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(path="/light")
 public class LightController {
     @Autowired
-    private LightRepository lightRepository;
+    private static LightRepository lightRepository;
 
     @GetMapping(path="/showSingle")
     public @ResponseBody JSONObject getLightNode(){
@@ -42,8 +42,7 @@ public class LightController {
         return jo;
     }
     //node1 bottom left corner, node2 top right corner
-    public List<LightNode> getSpecificLights(Node node1, Node node2){
-
+    public static List<LightNode> getSpecificLights(Node node1, Node node2){
         return lightRepository.getLightNodes(node1.getLatitude(),node1.getLongitude(), node2.getLatitude(), node2.getLongitude());
     }
 

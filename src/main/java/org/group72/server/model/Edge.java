@@ -32,7 +32,7 @@ public class Edge {
     private Node node2;
 
 
-    private LightController lightController=new LightController();
+//    private LightController lightController=new LightController();
 
     /**
      * Distance in meters.
@@ -110,9 +110,9 @@ public class Edge {
         }
 
         for(int j = 0; j<pointList.size(); j++){
-            Node Node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left
-            Node Node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right
-            sumOfLights += lightController.getSpecificLights(node1, node2).size();
+            Node node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left
+            Node node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right
+            sumOfLights += LightController.getSpecificLights(node1, node2).size();
           //  sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
         }
 
