@@ -3,6 +3,7 @@ package org.group72.server.controller;
 import net.minidev.json.JSONObject;
 import org.group72.server.dao.LightRepository;
 import org.group72.server.model.LightNode;
+import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,10 @@ public class LightController {
         jo.appendField("lights: ", lightList);
         return jo;
     }
+    //node1 bottom left corner, node2 top right corner
+    public List<LightNode> getSpecificLights(Node node1, Node node2){
 
-
+        return lightRepository.getLightNodes(node1.getLatitude(),node1.getLongitude(), node2.getLatitude(), node2.getLongitude());
+    }
 
 }

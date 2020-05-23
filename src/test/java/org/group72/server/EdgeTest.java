@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class EdgeTest {
-    @Autowired
-    private LightRepository lightRepository;
 
     @Test
     public void testCreateEdge(){
@@ -26,7 +24,7 @@ public class EdgeTest {
         assertEquals(18.090316, edge.getNode2().getLongitude());
     }
 
-    /*@Test
+    @Test
     public void testGetNumberOfLightNodes(){
         Node node1 = new Node(59.313670, 18.090316);
         Node node2 = new Node(59.312827, 18.090316);
@@ -35,13 +33,5 @@ public class EdgeTest {
         assertEquals(50, numberOfLights);
     }
 
-    @Test
-    public void testGetLightNodesQuery(){
-        Node point1 = new Node(59.313670, 18.090316);
-        Node point2 = new Node(59.312827, 18.090316);
 
-        List<LightNode> numberOfLights = lightRepository.getLightNodes(point2.getLatitude(), point2.getLongitude()- 0.0002, point1.getLatitude(), point1.getLongitude()+0.0002);
-        assertNotEquals(null, numberOfLights);
-    }
-*/
 }

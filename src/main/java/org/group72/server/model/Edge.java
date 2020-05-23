@@ -6,6 +6,7 @@ import org.group72.server.dao.LightRepository;
 import org.group72.server.model.LightNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.group72.server.controller.LightController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class Edge {
     @ManyToOne
     private Node node2;
 
-    @Autowired
-    private LightRepository lightRepository;
+
+    private LightController lightController=new LightController();
 
     /**
      * Distance in meters.
@@ -109,7 +110,10 @@ public class Edge {
         }
 
         for(int j = 0; j<pointList.size(); j++){
-            sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
+            Node Node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left
+            Node Node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right
+            sumOfLights += lightController.getSpecificLights(node1, node2).size();
+          //  sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
         }
 
 
