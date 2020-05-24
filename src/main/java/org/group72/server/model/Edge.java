@@ -64,8 +64,8 @@ public class Edge {
     }
 
     /**
-     * TODO: implement this method  (Max)
-     * Figure out how many lightnodes exist along this edge (between the 2 nodes)
+     * TODO: Make sure it works correctly, specially the placement of the rectangles as well as the size of the rectangle, particularly when the distance to the last point is shorter than usual.
+     * Figure out how many lightnodes exist along and around this edge
      * @return amount of lightnodes found
      */
     public int getNumberOfLightNodes(){
@@ -98,26 +98,25 @@ public class Edge {
         double tempMetersInLatLong = 0.0002;
         int metersPerRectangle = 10;
         ArrayList<Node> lightList = new ArrayList<Node>();
-        int distance = calculateDistance(node1.getLatitude(), node1.getLongitude(), node2.getLatitude(), node2.getLongitude()); // get length
-        int rectanglesNeeded = (int)Math.ceil(distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good
+        int distance = calculateDistance(node1.getLatitude(), node1.getLongitude(), node2.getLatitude(), node2.getLongitude()); // get total length between the 2 nodes
+        int rectanglesNeeded = (int)Math.ceil(distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
         //next figure out where the place the rectangles - we need to figure out the path between the 2 nodes and place checkpoints every 10 meters
-        double latDif = node2.getLatitude()-node1.getLatitude();
-        double longDif = node2.getLongitude()-node1.getLongitude();
+        double latDif = (node2.getLatitude()-node1.getLatitude())/rectanglesNeeded;    //total difference in latitude between the 2 nodes divided by amount of rectangles
+        double longDif = (node2.getLongitude()-node1.getLongitude())/rectanglesNeeded;     ////total difference in longitude between the 2 nodes divided by amount of rectangles
 
-        ArrayList<Node> pointList = new ArrayList<Node>((int)Math.ceil(rectanglesNeeded)+1);
-        for(int i = 0; i<rectanglesNeeded+1; i++){
-            pointList.add(new Node(node1.getLatitude()+(i*latDif), node1.getLongitude()+(i*longDif)));
+        ArrayList<Node> pointList = new ArrayList<Node>((int)Math.ceil(rectanglesNeeded)+1); //create list to hold the "points" along the route from node1 to node2
+        for(int i = 0; i<rectanglesNeeded+1; i++){  //forloop to add all the points lat/long values into our list
+            pointList.add(new Node(node1.getLatitude()+(i*latDif), node1.getLongitude()+(i*longDif))); //for each point add the number point it is times
+        }                                                                                                               //the distance from 1 point to another  //bit confusing but makes sense, i think
+
+        for(int j = 0; j<pointList.size(); j++){  //now go through all points and get lights inside each rectangle
+            Node node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left corner of rectangle
+            Node node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right corner of rectangle
+            sumOfLights += lightController.getSpecificLights(node1, node2).size();  //send sql request for lights between corners of rectangle, check how many lights found and add to the sum of lights found
         }
 
-        for(int j = 0; j<pointList.size(); j++){
-            Node node1 = new Node(pointList.get(j).getLatitude()-tempMetersInLatLong, pointList.get(j).getLongitude()-tempMetersInLatLong);//bottom left
-            Node node2 = new Node(pointList.get(j).getLatitude()+tempMetersInLatLong, pointList.get(j).getLongitude()+tempMetersInLatLong);//top right
-            sumOfLights += lightController.getSpecificLights(node1, node2).size();
-          //  sumOfLights += lightRepository.getLightNodes(pointList.get(j).getLatitude()- tempMetersInLatLong, pointList.get(j).getLongitude()- tempMetersInLatLong, pointList.get(j).getLatitude()+ tempMetersInLatLong, pointList.get(j).getLongitude()+ tempMetersInLatLong).size();
-        }
 
-
-        return sumOfLights;
+        return sumOfLights; // return total number of lights found
     }
 
     public Node getNode1() {
