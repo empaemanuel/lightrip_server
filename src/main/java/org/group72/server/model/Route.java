@@ -20,12 +20,14 @@ class Route{
     private JSONArray MinLightRoute;
     private Edge startStreet;
     private Edge endStreet;
+    private static Set<Edge> checkedStreets;
 
     public Route(Edge startStreet, Edge endStreet){
         this.startStreet = startStreet;
         this.endStreet = endStreet;
-        calculateRoute();
     }
+
+
 
     public long getId() {
         return id   ;
@@ -48,11 +50,11 @@ class Route{
         private PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingStreets());
         pQueue.addAll()
         for(Edge e : pQueue){
-            if(e.getLightLevel() >= lightLevel && !e.isChecked()) {
-                if(e.equals(endStreet)){
-                    returnedRoute.add(e);
-                    return returnedRoute;
-                }else{
+            if(e.equals(endStreet)){
+                returnedRoute.add(e);
+                return returnedRoute;
+            }else{
+            if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
                  private Set<Edge> theory = findRoute(e, lightLevel);
                  if(theory == null)
                      return null;
