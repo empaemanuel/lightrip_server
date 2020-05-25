@@ -1,5 +1,11 @@
 package org.group72.server.model;
 
+import org.json.JSONArray;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.UUID;
 /**
 *
@@ -46,16 +52,15 @@ class Route{
     }
 
     private Set<Edge> findRoute(Edge currentStreet, int lightLevel){
-        private Set<Edge> returnedRoute;
-        private PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingStreets());
-        pQueue.addAll()
+        Set<Edge> returnedRoute = new HashSet<>();
+        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingStreets());
         for(Edge e : pQueue){
             if(e.equals(endStreet)){
                 returnedRoute.add(e);
                 return returnedRoute;
             }else{
             if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                 private Set<Edge> theory = findRoute(e, lightLevel);
+                 Set<Edge> theory = findRoute(e, lightLevel);
                  if(theory == null)
                      return null;
                  if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {
