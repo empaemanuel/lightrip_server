@@ -18,12 +18,12 @@ class Route{
     private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
     private JSONArray MinLightRoute;
-    private Edge startEdge;
-    private Edge endEdge;
+    private Street startStreet;
+    private Street endStreet;
 
-    public Route(Edge startEdge, Edge endEdge){
-        this.startEdge = startEdge;
-        this.endEdge = endEdge;
+    public Route(Street startStreet, Street endStreet){
+        this.startStreet = startStreet;
+        this.endStreet = endStreet;
         calculateRoute();
     }
 
@@ -43,7 +43,27 @@ class Route{
         return MinLightRoute;
     }
 
-    private void calculateRoute(){
-
+    private Set<Street> findRoute(Street currentStreet, int lightLevel){
+        private Set<Street> returnedRoute;
+        private PriorityQueue<Street> pQueue = new PriorityQueue<Street>(currentStreet.getBorderingStreets());
+        pQueue.addAll()
+        for(Street e : pQueue){
+            if(e.getLightLevel() >= lightLevel && !e.isChecked()) {
+                if(e.equals(endStreet)){
+                    returnedRoute.add(e);
+                    return returnedRoute;
+                }else{
+                 private Set<Street> theory = findRoute(e, lightLevel);
+                 if(theory == null)
+                     return null;
+                 if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {
+                     returnedRoute.add(e);
+                     returnedRoute.addAll(theory);
+                     return returnedRoute;
+                 }
+                }
+            }
+        }
+        return null;
     }
 }
