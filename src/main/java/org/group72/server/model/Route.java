@@ -17,7 +17,6 @@ class Route{
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
-    private User user;
     /*private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
     private JSONArray MinLightRoute;*/
