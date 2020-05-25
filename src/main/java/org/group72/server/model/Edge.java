@@ -9,7 +9,7 @@ import javax.persistence.*;
  * @author Emil.M
  */
 @Entity
-public class Edge {
+public class Edge implements Comparable<Edge>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,6 +25,8 @@ public class Edge {
      * Distance in meters.
      */
     private int distance;
+
+
 
     //Required by JPA.
     public Edge() {
@@ -78,4 +80,31 @@ public class Edge {
     public Node getNode2() {
         return node2;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public boolean equals(Object o){
+        if(o == this){
+            return true;
+        }
+        if(!o instanceof Edge){
+            return false;
+        }
+
+        Edge e = (Edge) o;
+
+        return e.getId() == getId();
+    }
+
+    @Override
+    public int compareTo(Edge o){
+        return this.getDistance().compareTo(o.getDistance());
+    }
+
 }
