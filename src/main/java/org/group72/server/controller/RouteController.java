@@ -6,6 +6,7 @@ import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
+import org.group72.server.model.LightNode;
 import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * This class handles incoming requests regarding generation, viewing and storing routes
@@ -67,6 +69,12 @@ public class RouteController {
         return response;
     }
 
+    @GetMapping(path="/connectEdges")
+    public @ResponseBody String connectEdges() {
+        // This returns a JSON or XML with the users
+    	populateDatabase();
+        return "arrays";
+    }
 
     /**
      * SHOULD BE REMOVED OR HIDDEN BEFORE RELEASE.
@@ -80,7 +88,7 @@ public class RouteController {
 //    }
 
     private void populateDatabase(){
-        String filePath = "/Users/earth/Desktop/Projects/Java/Projects/pvtGroup72/server/src/main/resources/vitaberglinjer.list";
+        String filePath = "/Users/idaso/documents/vitaberglinjer.list";
 
         BufferedReader reader;
         try {
@@ -113,10 +121,22 @@ public class RouteController {
             nodeRepository.save(n);
             if(prev!=null){
                 Edge e = new Edge(prev, n);
-                edgeRepository.save(e);
+                
+                /*
+                 * Om vi ska ta in en lista på alla connected edges borde vi ev ha en avsmalning först så den metoden inte
+                 * behöver gå genom ALLA edges. 
+                 * exists a findAllById - should change Edges ID to coordinates
+                 */
+                for (Edge oldEdge : edgeRepository.findAll()) {
+                	if (oldEdge.getNode1() == e.getNode1() && oldEdge.getNode2() != e.getNode2()) {
+                		e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
+                	}else if(oldEdge.getNode2() == e.getNode2() && oldEdge.getNode1() != e.getNode1()) {
+                    	e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
+                		}
+                	}
+                	edgeRepository.save(e);
+                }
+            	prev = n;
             }
-            prev = n;
         }
     }
-
-}

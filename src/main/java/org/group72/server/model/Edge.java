@@ -1,5 +1,7 @@
 package org.group72.server.model;
 
+import java.util.ArrayList;
+
 import javax.persistence.*;
 
 /**
@@ -20,6 +22,8 @@ public class Edge {
 
     @ManyToOne
     private Node node2;
+    
+    private ArrayList<Edge> connectedEdges = new ArrayList<>();
 
     /**
      * Distance in meters.
@@ -34,8 +38,22 @@ public class Edge {
     public Edge(Node n1, Node n2){
         this.node1 = n1;
         this.node2 = n2;
+        
     }
 
+
+    /**
+     * Used to bring arraylist of edges from edge repo
+     * @author Ida
+     */
+    
+    public ArrayList<Edge> connectEdges(Node n1, Node n2) {
+    	Edge e = new Edge(n1, n2);
+    	connectedEdges.add(e);
+    	
+    	return connectedEdges;
+    	
+    }
     /**
      * Calculates the distance between the nodes
      * as a positive value in meters.
@@ -78,4 +96,10 @@ public class Edge {
     public Node getNode2() {
         return node2;
     }
+
+
+	public double getDistance() {
+		return distance;
+	}
+
 }
