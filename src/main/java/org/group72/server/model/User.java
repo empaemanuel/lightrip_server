@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
@@ -15,13 +17,13 @@ public class User {
 
     private String email;
 
-    private Route[] routes;
+    private ArrayList<Route> routes;
 
     public Integer getId() {
         return id;
     }
 
-    public Array<Route> getRoutes() {
+    public ArrayList<Route> getRoutes() {
         return routes;
     }
 
@@ -46,6 +48,6 @@ public class User {
     }
 
     public void addRoute(Route route) {
-        routes.append(route);
+        routes.add(route);
     }
 }
