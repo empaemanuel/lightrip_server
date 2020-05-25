@@ -1,9 +1,12 @@
 package org.group72.server.dao;
 
 import org.group72.server.model.Edge;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import javax.transaction.Transactional;
 
 public interface EdgeRepository extends CrudRepository<Edge, Integer> {
 
@@ -23,6 +26,11 @@ public interface EdgeRepository extends CrudRepository<Edge, Integer> {
             "and e.node2.latitude = :lat_B " +
             "and e.node2.longitude = :lon_B " )
     Edge getEdge(@Param("lat_A") double lat_A, @Param ("lon_A") double lon_A, @Param ("lat_B") double lat_B, @Param ("lon_B") double lon_B);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Edge e SET e.lightWeight = :LightWeight WHERE e.node1.latitude = :Lat1 AND e.node1.longitude = :Long1 AND e.node2.latitude = :Lat2 AND e.node2.longitude = :Long2")
+    void setEdgeLightWeight(@Param("Lat1") double latitude1, @Param("Long1") double longitude1, @Param("Lat2") double latitude2, @Param("Long2") double longitude2, @Param("LightWeight") int lightWeight);
 
 
 

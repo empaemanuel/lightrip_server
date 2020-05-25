@@ -31,6 +31,7 @@ public class Edge {
     @ManyToOne
     private Node node2;
 
+    private int lightWeight;
     /**
      * Distance in meters.
      */
@@ -51,7 +52,7 @@ public class Edge {
      * as a positive value in meters.
      * @return double distance in meters
      */
-    private static int calculateDistance(double lat1, double lon1, double lat2, double lon2){
+    public static int calculateDistance(double lat1, double lon1, double lat2, double lon2){
         double radius = 6378.137; // Radius of earth in KM
         double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
         double dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
@@ -68,7 +69,7 @@ public class Edge {
      * Figure out how many lightnodes exist along and around this edge
      * @return amount of lightnodes found
      */
-    public int getNumberOfLightNodes(){
+    /*public int getNumberOfLightNodes(){
 
 
         //figure out what area to search for nodes in, what coords, how far out do we look?
@@ -117,7 +118,7 @@ public class Edge {
 
 
         return sumOfLights; // return total number of lights found
-    }
+    }*/
 
     public Node getNode1() {
         return node1;
@@ -125,5 +126,9 @@ public class Edge {
 
     public Node getNode2() {
         return node2;
+    }
+
+    public int getLightWeight() {
+        return lightWeight;
     }
 }
