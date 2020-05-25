@@ -1,12 +1,9 @@
 package org.group72.server.model;
 
-import org.json.JSONArray;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.UUID;
 /**
 *
 *
@@ -21,9 +18,9 @@ class Route{
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
     private User user;
-    private JSONArray MaxLightRoute;
+    /*private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
-    private JSONArray MinLightRoute;
+    private JSONArray MinLightRoute;*/
     private Edge startStreet;
     private Edge endStreet;
     private static Set<Edge> checkedStreets;
@@ -39,7 +36,7 @@ class Route{
         return id   ;
     }
 
-    public JSONArray getMaxLightRoute() {
+    /*public JSONArray getMaxLightRoute() {
         return MaxLightRoute;
     }
 
@@ -49,7 +46,7 @@ class Route{
 
     public JSONArray getMinLightRoute() {
         return MinLightRoute;
-    }
+    }*/
 
     private Set<Edge> findRoute(Edge currentStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
