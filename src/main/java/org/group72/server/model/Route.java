@@ -53,7 +53,7 @@ class Route{
 
     private Set<Edge> findRoute(Edge currentStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingStreets());
+        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingEdges());
         for(Edge e : pQueue){
             if(e.equals(endStreet)){
                 returnedRoute.add(e);
