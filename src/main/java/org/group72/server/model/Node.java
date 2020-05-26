@@ -2,6 +2,7 @@ package org.group72.server.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @Entity
 @IdClass(NodeKey.class)
@@ -13,6 +14,7 @@ public class Node {
     @Id
     private double longitude;
 
+    private int lightLevel;
 
     public Node() {
     }
@@ -28,5 +30,15 @@ public class Node {
     public Node(double latitude, double longitude){
         this.latitude=latitude;
         this.longitude=longitude;
+    }
+
+
+    public ArrayList<Edge> getBorderingEdges() {
+        return null;
+        //return connectedEdges;
+    }
+
+    public int getLightLevel() {
+        return lightLevel;
     }
 }
