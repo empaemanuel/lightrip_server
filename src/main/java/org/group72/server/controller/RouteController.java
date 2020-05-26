@@ -41,7 +41,7 @@ public class RouteController {
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
         Route route = new Route();
-        routeArray.addAll(route.findRoute(edgeRepository, startStreet, endStreet, lightLevel));
+        routeArray.addAll(route.findRoute(startStreet, endStreet, lightLevel));
         response.appendField("route", route);
         return response;
     }
