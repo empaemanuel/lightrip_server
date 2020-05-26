@@ -60,7 +60,7 @@ public class EdgeController {
         double tempMetersInLatLong = 0.0003;
         int metersPerRectangle = 10;
         int distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude()); // get total length between the 2 nodes
-        double rectanglesNeeded = (distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
+        double rectanglesNeeded = ((double)distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
         double sizeOfLastRectangle = rectanglesNeeded - Math.floor(rectanglesNeeded);
         //next figure out where the place the rectangles - we need to figure out the path between the 2 nodes and place checkpoints every 10 meters
         double latDif = (e.getNode2().getLatitude()-e.getNode1().getLatitude())/rectanglesNeeded;    //total difference in latitude between the 2 nodes divided by amount of rectangles
