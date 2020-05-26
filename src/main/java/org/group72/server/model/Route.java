@@ -17,6 +17,10 @@ import java.util.Set;
 @Entity // This tells Hibernate to make a table out of this class
 public class Route{
 
+    @Autowired
+    private EdgeRepository edgeRepository;
+
+
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
@@ -46,10 +50,10 @@ public class Route{
         return MinLightRoute;
     }*/
 
-    public Set<Node> findRoute(EdgeRepository edges, Node currentStreet, Node endStreet, int lightLevel){
+    public Set<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
         Set<Node> returnedRoute = new HashSet<>();
         PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
-        edges.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()).forEach(edge -> {
+        edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()).forEach(edge -> {
             pQueue.add(edge.getOtherNode(currentStreet));
         });
         for(Node e : pQueue){
@@ -58,7 +62,7 @@ public class Route{
                 return returnedRoute;
             }else{
             if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                 Set<Node> theory = findRoute(edges, e, endStreet, lightLevel);
+                 Set<Node> theory = findRoute(e, endStreet, lightLevel);
                  if(theory == null)
                      return null;
                  if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {
