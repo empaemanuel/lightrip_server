@@ -59,12 +59,36 @@
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-test</artifactId>-->
+<!--			<scope>test</scope>-->
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>junit</groupId>-->
+<!--					<artifactId>junit</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+			<version>1.4.194</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-spatial</artifactId>
 			<version>8.2.0</version>
 		</dependency>
+
 		<!--		security dependencies-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
@@ -82,22 +106,22 @@
 	<build>
 
 		<plugins>
-			<plugin>
-				<groupId>org.jsonschema2pojo</groupId>
-				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-				<version>1.0.2</version>
-				<configuration>
-					<sourceDirectory>C:/Users/Idaso/Documents/vitabergbelysning.json</sourceDirectory>
-					<targetPackage>org.group72.server.model</targetPackage>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-<!--							<goal>generate</goal>-->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.jsonschema2pojo</groupId>-->
+<!--				<artifactId>jsonschema2pojo-maven-plugin</artifactId>-->
+<!--				<version>1.0.2</version>-->
+<!--				<configuration>-->
+<!--					<sourceDirectory>C:/Users/Idaso/Documents/vitabergbelysning.json</sourceDirectory>-->
+<!--					<targetPackage>org.group72.server.model</targetPackage>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<goals>-->
+<!--&lt;!&ndash;							<goal>generate</goal>&ndash;&gt;-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
