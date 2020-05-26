@@ -9,9 +9,7 @@ import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -66,6 +64,51 @@ public class RouteController {
 
         return response;
     }
+    
+    @GetMapping(path = "/routeGenerator")
+    public @ResponseBody JSONObject routeGenerator(@RequestParam Node node1, @RequestParam Node node2) {
+    	JSONObject response = new JSONObject();
+    	
+    	findRoute(node1, node2);
+    	
+    	return response;
+    }
+    
+    private void findRoute(Node n1, Node n2) {
+    	Edge e = findEdge(n1, n2);
+
+    }
+    
+    private Edge findEdge(Node n1, Node n2) {
+//    	if (edgeRepository.getEdge(n1.getLatitude(), n1.getLongitude(), n2.getLatitude(), n2.getLongitude()) != null) {
+//    		return edgeRepository.getEdge(n1.getLatitude(), n1.getLongitude(), n2.getLatitude(), n2.getLongitude());
+//    	} else {
+    		Edge edge = edgeRepository.getEdgeFromNode1(n1.getLatitude(), n1.getLongitude());
+    		for (Edge e : edge.getConnections()) {
+    			if (e.getNode2().equals(n2)) {
+    				return e;
+    			}
+    			else {
+    				/* Den bör kolla genom alla edges som kommer från repot
+    				 * sätta in den med lägst skillnad mot n2 i en array (? pga tre rutter)
+    				 * och sedan rekursivt fortsätta med detta tills den kommer till n2
+    				 * @author Ida
+    				 */
+    				int[] topThree = new int[3];
+    				if (topThree[0] == 0) { //TODO behöver gå genom alla tre
+    					if (e.calculateDistance(e.getNode2().getLatitude(), e.getNode2().getLongitude(), n2.getLatitude(), n2.getLongitude()) //
+    						< currentBest.calculateDistance()) { 
+    					
+    					//TODO: remake calculateDistance to take in two nodes so check can be done
+    					// to control e.getNode2s distance to n2. 
+    					}
+    				}
+    				topThree[0] = e.hashCode(); //TODO supposed to be ID, check this 
+    			}
+    		}
+    	}
+ //   }
+    
 
     @GetMapping(path="/connectEdges")
     public @ResponseBody String connectEdges() {
