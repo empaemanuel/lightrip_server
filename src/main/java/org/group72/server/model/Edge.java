@@ -43,6 +43,18 @@ public class Edge implements Comparable<Edge>{
     }
 
     /**
+     * Constructor for testing purposes.
+     */
+
+    public Edge(Node n1, Node n2, int id, int lightLevel) {
+        this.node1 = n1;
+        this.node2 = n2;
+        this.id = id;
+        this.distance = this.calculateDistance();
+        this.lightLevel = lightLevel;
+    }
+
+    /**
      * Calculates the distance between the nodes
      * as a positive value in meters.
      * @return double distance in meters
