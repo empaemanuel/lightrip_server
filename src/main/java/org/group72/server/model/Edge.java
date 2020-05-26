@@ -29,7 +29,7 @@ public class Edge implements Comparable<Edge>{
 
     private int lightLevel;
 
-    private ArrayList<Edge> connectedEdges = new ArrayList<>();
+    //private ArrayList<Edge> connectedEdges = new ArrayList<>();
 
 
     //Required by JPA.
@@ -78,7 +78,8 @@ public class Edge implements Comparable<Edge>{
     }
 
     public ArrayList<Edge> getBorderingEdges() {
-            return connectedEdges;
+        return null;
+        //return connectedEdges;
     }
 
     public int getLightLevel() {
