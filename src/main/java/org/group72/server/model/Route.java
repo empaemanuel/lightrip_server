@@ -1,5 +1,8 @@
 package org.group72.server.model;
 
+import org.group72.server.dao.EdgeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -12,7 +15,11 @@ import java.util.Set;
 * */
 
 @Entity // This tells Hibernate to make a table out of this class
-class Route{
+public class Route{
+
+    @Autowired
+    private EdgeRepository edgeRepository;
+
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -20,7 +27,7 @@ class Route{
     /*private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
     private JSONArray MinLightRoute;*/
-    private static Set<Edge> checkedStreets;
+    private static Set<Node> checkedStreets;
 
     public Route(){
     }
@@ -43,16 +50,19 @@ class Route{
         return MinLightRoute;
     }*/
 
-    private Set<Edge> findRoute(Edge currentStreet, Edge endStreet, int lightLevel){
-        Set<Edge> returnedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<>(currentStreet.getBorderingEdges());
-        for(Edge e : pQueue){
+    public Set<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        Set<Node> returnedRoute = new HashSet<>();
+        PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
+        edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()).forEach(edge -> {
+            pQueue.add(edge.getOtherNode(currentStreet));
+        });
+        for(Node e : pQueue){
             if(e.equals(endStreet)){
                 returnedRoute.add(e);
                 return returnedRoute;
             }else{
             if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                 Set<Edge> theory = findRoute(e, endStreet, lightLevel);
+                 Set<Node> theory = findRoute(e, endStreet, lightLevel);
                  if(theory == null)
                      return null;
                  if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {

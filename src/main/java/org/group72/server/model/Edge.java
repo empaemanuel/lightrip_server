@@ -156,6 +156,14 @@ public class Edge implements Comparable<Edge>{
         return node2;
     }
 
+
+    public Node getOtherNode(Node node){
+        if(node.equals(node1)) {
+            return node2;
+        }
+        return node1;
+    }
+
     public int getLightWeight() {
         return lightWeight;
     }

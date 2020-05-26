@@ -7,6 +7,7 @@ import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
+import org.group72.server.model.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ import java.io.IOException;
  * @author Emil M.
  */
 @Controller
-@RequestMapping(path="/route")
+@RequestMapping(path="/get_route")
 public class RouteController {
     @Autowired
     private EdgeRepository edgeRepository;
@@ -36,17 +37,22 @@ public class RouteController {
      * A demo route manually created.
      * @return An array of edges as JSON.
      */
-    @GetMapping(path = "/get")
-    public @ResponseBody JSONObject getRoute(
-            @RequestParam("FromLongitude") double fromLatitude,
-            @RequestParam("FromLatitude") double fromLongitude,
-            @RequestParam("ToLongitude") double toLatitude,
-            @RequestParam("ToLatitude") double toLongitude) {
+    @GetMapping(path = "/get_route")
+    public @ResponseBody JSONObject generateRoute(Node startStreet, Node endStreet, int lightLevel){
+        JSONObject response = new JSONObject();
+        JSONArray routeArray = new JSONArray();
+        Route route = new Route();
+        routeArray.addAll(route.findRoute(startStreet, endStreet, lightLevel));
+        response.appendField("route", route);
+        return response;
+    }
+
+
+    /*public @ResponseBody JSONObject demo(){
 
         JSONObject response = new JSONObject();
         response.appendField("user" , "The ID token can be sent here");
 
-        //TODO replace below with call to breath first search engine.
         JSONArray route = new JSONArray();
         //59.3121417  18.0911303 -> 59.3123095 18.0912094
         Node n = nodeRepository.getNode(59.3121417,18.0911303);
@@ -71,7 +77,7 @@ public class RouteController {
         response.appendField("distance", 130);
 
         return response;
-    }
+    }*/
 
 
     /**
