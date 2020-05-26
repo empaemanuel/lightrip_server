@@ -1,9 +1,12 @@
 package org.group72.server.model;
 
+import org.json.JSONArray;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.UUID;
 /**
 *
 *
@@ -17,12 +20,17 @@ class Route{
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
-    /*private JSONArray MaxLightRoute;
+    private User user;
+    private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
-    private JSONArray MinLightRoute;*/
+    private JSONArray MinLightRoute;
+    private Edge startStreet;
+    private Edge endStreet;
     private static Set<Edge> checkedStreets;
 
-    public Route(){
+    public Route(Edge startStreet, Edge endStreet){
+        this.startStreet = startStreet;
+        this.endStreet = endStreet;
     }
 
 
@@ -31,7 +39,7 @@ class Route{
         return id   ;
     }
 
-    /*public JSONArray getMaxLightRoute() {
+    public JSONArray getMaxLightRoute() {
         return MaxLightRoute;
     }
 
@@ -41,18 +49,18 @@ class Route{
 
     public JSONArray getMinLightRoute() {
         return MinLightRoute;
-    }*/
+    }
 
-    private Set<Edge> findRoute(Edge currentStreet, Edge endStreet, int lightLevel){
+    private Set<Edge> findRoute(Edge currentStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<>(currentStreet.getBorderingEdges());
+        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>(currentStreet.getBorderingEdges());
         for(Edge e : pQueue){
             if(e.equals(endStreet)){
                 returnedRoute.add(e);
                 return returnedRoute;
             }else{
             if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                 Set<Edge> theory = findRoute(e, endStreet, lightLevel);
+                 Set<Edge> theory = findRoute(e, lightLevel);
                  if(theory == null)
                      return null;
                  if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {

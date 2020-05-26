@@ -1,7 +1,8 @@
 package org.group72.server.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class for undirected edges. Each edge has two positions A and B which should have no internal order.
@@ -27,9 +28,9 @@ public class Edge implements Comparable<Edge>{
      */
     private int distance;
 
-    private int lightLevel;
+    int lightLevel;
 
-    private ArrayList<Edge> connectedEdges = new ArrayList<>();
+    Set<Edge> borderingEdges = new HashSet<>();
 
 
     //Required by JPA.
@@ -77,8 +78,8 @@ public class Edge implements Comparable<Edge>{
         return earthRadius * c;
     }
 
-    public ArrayList<Edge> getBorderingEdges() {
-            return connectedEdges;
+    public Set<Edge> getBorderingEdges() {
+            return borderingEdges;
     }
 
     public int getLightLevel() {
