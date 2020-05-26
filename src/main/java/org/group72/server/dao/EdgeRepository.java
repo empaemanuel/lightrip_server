@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface EdgeRepository extends CrudRepository<Edge, Integer> {
 
@@ -32,7 +33,12 @@ public interface EdgeRepository extends CrudRepository<Edge, Integer> {
     @Query("UPDATE Edge e SET e.lightWeight = :LightWeight WHERE e.node1.latitude = :Lat1 AND e.node1.longitude = :Long1 AND e.node2.latitude = :Lat2 AND e.node2.longitude = :Long2")
     void setEdgeLightWeight(@Param("Lat1") double latitude1, @Param("Long1") double longitude1, @Param("Lat2") double latitude2, @Param("Long2") double longitude2, @Param("LightWeight") int lightWeight);
 
-
-
+    @Query("SELECT e " +
+            "FROM Edge e " +
+            "WHERE (e.node1.latitude = :latitude " +
+            "and e.node1.longitude = :longitude) " +
+            "or (e.node2.latitude = :latitude " +
+            "and e.node2.longitude = :longitude) ")
+    List<Edge> getEdgesBy(@Param("latitude") double latitude, @Param("longitude") double longitude);
 
 }
