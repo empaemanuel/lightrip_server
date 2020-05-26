@@ -6,7 +6,6 @@ import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
-import org.group72.server.model.LightNode;
 import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * This class handles incoming requests regarding generation, viewing and storing routes
@@ -95,7 +93,7 @@ public class RouteController {
             reader = new BufferedReader(new FileReader(filePath));
             String line = reader.readLine();
             while(line != null){
-                extractPositionsFromJson(line);
+                extractPositionsFromJsonListVersion(line);
                 line = reader.readLine(); //moves to next line
             }
         } catch (IOException e) {
@@ -129,12 +127,48 @@ public class RouteController {
                  */
                 for (Edge oldEdge : edgeRepository.findAll()) {
                 	if (oldEdge.getNode1() == e.getNode1() && oldEdge.getNode2() != e.getNode2()) {
+                		System.out.println(e + "  1");
                 		e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
                 	}else if(oldEdge.getNode2() == e.getNode2() && oldEdge.getNode1() != e.getNode1()) {
+                		System.out.println(e + "  2");
                     	e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
                 		}
                 	}
+        			System.out.println(e + "  3");
                 	edgeRepository.save(e);
+                }
+            	prev = n;
+            }
+        }
+    
+    private void extractPositionsFromJsonListVersion(String json){
+        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
+
+        Node prev = null;
+        for(int i=0; i < points.size(); i++) {
+            JSONArray point = (JSONArray) points.get(i);
+            double longitude = (double) point.get(0);
+            double latitude = (double) point.get(1);
+
+            Node n = new Node(latitude,longitude);
+            if(prev!=null){
+                Edge e = new Edge(prev, n);
+                
+                /*
+                 * Om vi ska ta in en lista på alla connected edges borde vi ev ha en avsmalning först så den metoden inte
+                 * behöver gå genom ALLA edges. 
+                 * exists a findAllById - should change Edges ID to coordinates
+                 */
+                for (Edge oldEdge : edgeRepository.findAll()) {
+                	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))) {
+                		System.out.println(e.getConnections()  + "  1");
+                		e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
+                	}else if(oldEdge.getNode2().equals(e.getNode2()) && !(oldEdge.getNode1().equals(e.getNode1()))) {
+                		System.out.println(e.getConnections()  + "  2");
+                    	e.connectEdges(oldEdge.getNode1(), oldEdge.getNode2());
+                		}
+                	}
+        			System.out.println(e.getConnections() + "  3");
                 }
             	prev = n;
             }

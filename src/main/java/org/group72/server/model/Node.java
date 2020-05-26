@@ -1,6 +1,8 @@
 package org.group72.server.model;
 
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 @Entity
@@ -28,5 +30,19 @@ public class Node {
     public Node(double latitude, double longitude){
         this.latitude=latitude;
         this.longitude=longitude;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Double.compare(node.latitude, latitude) == 0 &&
+                Double.compare(node.longitude, longitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, longitude);
     }
 }
