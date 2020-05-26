@@ -1,16 +1,9 @@
 package org.group72.server.model;
 
 import javax.persistence.*;
-import net.minidev.json.JSONObject;
-import org.group72.server.dao.LightRepository;
-import org.group72.server.model.LightNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.group72.server.controller.LightController;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Class for undirected edges. Each edge has two positions A and B which should have no internal order.
@@ -19,7 +12,7 @@ import java.util.List;
  * @author Emil.M
  */
 @Entity
-public class Edge {
+public class Edge implements Comparable<Edge>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,6 +30,11 @@ public class Edge {
      */
     private int distance;
 
+    private int lightLevel;
+
+    //private ArrayList<Edge> connectedEdges = new ArrayList<>();
+
+
     //Required by JPA.
     public Edge() {
     }
@@ -52,6 +50,7 @@ public class Edge {
      * as a positive value in meters.
      * @return double distance in meters
      */
+
     public static int calculateDistance(double lat1, double lon1, double lat2, double lon2){
         double radius = 6378.137; // Radius of earth in KM
         double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
@@ -63,6 +62,26 @@ public class Edge {
         double d = radius * c;
         return (int) d * 1000; // meters
     }
+
+
+    //OLD
+//    public int calculateDistance() {
+//        return (int) Math.round(calculateDistance(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude()));
+//    }
+
+    //OLD VERSION
+//    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+//        double earthRadius = 6371000;
+//        double dLat = Math.toRadians(lat2-lat1);
+//        double dLng = Math.toRadians(lng2-lng1);
+//        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+//                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+//                        Math.sin(dLng/2) * Math.sin(dLng/2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//
+//        return earthRadius * c;
+//    }
+
 
     /**
      * TODO: Make sure it works correctly, specially the placement of the rectangles as well as the size of the rectangle, particularly when the distance to the last point is shorter than usual.
@@ -120,6 +139,15 @@ public class Edge {
         return sumOfLights; // return total number of lights found
     }*/
 
+    public ArrayList<Edge> getBorderingEdges() {
+        return null;
+        //return connectedEdges;
+    }
+
+    public int getLightLevel() {
+        return lightLevel;
+    }
+
     public Node getNode1() {
         return node1;
     }
@@ -131,4 +159,36 @@ public class Edge {
     public int getLightWeight() {
         return lightWeight;
     }
+    public int getId() {
+        return id;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public boolean equals(Object o){
+        if(o == this){
+            return true;
+        }
+        if(!(o instanceof Edge)){
+            return false;
+        }
+
+        Edge e = (Edge) o;
+
+        return e.getId() == getId();
+    }
+
+    @Override
+    public int compareTo(Edge o){
+        if(getDistance() < o.getDistance()){
+            return -1;
+        }else if(getDistance() > o.getDistance()){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
 }
