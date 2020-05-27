@@ -1,6 +1,8 @@
 package org.group72.server.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+
 /**
 *
 *
@@ -9,7 +11,8 @@ import javax.persistence.*;
 * */
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Route{
+@IdClass(Route.class)
+public class Route implements Serializable {
 
 
     @Id
