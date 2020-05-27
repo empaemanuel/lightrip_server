@@ -1,12 +1,6 @@
 package org.group72.server.model;
 
-import org.group72.server.dao.EdgeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
 /**
 *
 *
@@ -20,16 +14,29 @@ public class Route{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private long id;
+    private Integer id;
+    @Id
+    private Integer ownedBy;
+
+
     /*private JSONArray MaxLightRoute;
     private JSONArray MedLightRoute;
     private JSONArray MinLightRoute;*/
 
+
     public Route(){
     }
 
-    public long getId() {
-        return id   ;
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getOwnedBy() {
+        return ownedBy;
+    }
+
+    public void setOwnedBy(Integer ownedBy) {
+        this.ownedBy = ownedBy;
     }
 
     /*public JSONArray getMaxLightRoute() {

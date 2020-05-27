@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping(path="/add") // Map ONLY POST Requests
     public @ResponseBody
-    String addNewUser (@RequestParam String name, @RequestParam String email ) {
+    Integer addNewUser (@RequestParam String name, @RequestParam String email ) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
@@ -29,15 +29,21 @@ public class UserController {
         n.setName(name);
         n.setEmail(email);
         userRepository.save(n);
-        return "Saved";
+        return n.getId();
     }
-
     @GetMapping(path="/all")
     public @ResponseBody Iterable<User> getAllUsers() {
         // This returns a JSON or XML with the users
         return userRepository.findAll();
     }
 
+    @GetMapping(path="/specified")
+    public @ResponseBody User getUser(@RequestParam(value = "id") Integer id){
+        if(userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
+        }
+        return null;
+    }
 
     @DeleteMapping(path="/delete")
     public @ResponseBody String deleteUser(@RequestParam Integer id){
