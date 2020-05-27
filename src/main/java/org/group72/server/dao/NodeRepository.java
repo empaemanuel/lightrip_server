@@ -12,7 +12,9 @@ import org.group72.server.model.Node;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NodeRepository extends CrudRepository<Node, Double> {
 
     @Query("SELECT n FROM Node n WHERE n.latitude = :latitude and n.longitude = :longitude ")
