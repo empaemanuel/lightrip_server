@@ -11,14 +11,13 @@ import java.io.Serializable;
 * */
 
 @Entity // This tells Hibernate to make a table out of this class
-@IdClass(Route.class)
-public class Route implements Serializable {
+public class Route {
 
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
-    @Id
+
     private Integer ownedBy;
 
 
