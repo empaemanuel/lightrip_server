@@ -37,7 +37,7 @@ public class RouteController {
      * @return An array of edges as JSON.
      */
     @GetMapping(path = "/get")
-    public @ResponseBody JSONObject demo(
+    public @ResponseBody JSONObject getRoute(
             @RequestParam("FromLongitude") double fromLatitude,
             @RequestParam("FromLatitude") double fromLongitude,
             @RequestParam("ToLongitude") double toLatitude,
@@ -46,6 +46,7 @@ public class RouteController {
         JSONObject response = new JSONObject();
         response.appendField("user" , "The ID token can be sent here");
 
+        //TODO replace below with call to breath first search engine.
         JSONArray route = new JSONArray();
         //59.3121417  18.0911303 -> 59.3123095 18.0912094
         Node n = nodeRepository.getNode(59.3121417,18.0911303);
