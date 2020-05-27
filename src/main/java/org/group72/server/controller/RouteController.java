@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.BufferedReader;
@@ -35,8 +36,12 @@ public class RouteController {
      * A demo route manually created.
      * @return An array of edges as JSON.
      */
-    @GetMapping(path = "/demo")
-    public @ResponseBody JSONObject demo(){
+    @GetMapping(path = "/get")
+    public @ResponseBody JSONObject demo(
+            @RequestParam("FromLongitude") double fromLatitude,
+            @RequestParam("FromLatitude") double fromLongitude,
+            @RequestParam("ToLongitude") double toLatitude,
+            @RequestParam("ToLatitude") double toLongitude) {
 
         JSONObject response = new JSONObject();
         response.appendField("user" , "The ID token can be sent here");
