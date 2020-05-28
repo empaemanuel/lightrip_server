@@ -25,10 +25,10 @@ public class Edge implements Comparable<Edge>{
     private Node node2;
 
     private int lightWeight;
-    /**
-     * Distance in meters.
-     */
-    private int distance;
+    private int distanceWeight;
+
+
+
 
     //Required by JPA.
     public Edge() {
@@ -46,7 +46,7 @@ public class Edge implements Comparable<Edge>{
      * @return double distance in meters
      */
 
-    public static int calculateDistance(double lat1, double lon1, double lat2, double lon2){
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2){
         double radius = 6378.137; // Radius of earth in KM
         double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
         double dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
@@ -55,7 +55,7 @@ public class Edge implements Comparable<Edge>{
                         Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = radius * c;
-        return (int) d * 1000; // meters
+        return  d * 1000; // meters
     }
 
 
@@ -140,6 +140,8 @@ public class Edge implements Comparable<Edge>{
     }
 
 
+    public int getDistanceWeight() {
+        return distanceWeight; }
 
     public Node getNode1() {
         return node1;
@@ -163,9 +165,6 @@ public class Edge implements Comparable<Edge>{
         return id;
     }
 
-    public int getDistance() {
-        return distance;
-    }
 
     public boolean equals(Object o){
         if(o == this){
@@ -182,9 +181,9 @@ public class Edge implements Comparable<Edge>{
 
     @Override
     public int compareTo(Edge o){
-        if(getDistance() < o.getDistance()){
+        if(getDistanceWeight() < getDistanceWeight()){
             return -1;
-        }else if(getDistance() > o.getDistance()){
+        }else if(getDistanceWeight() > o.getDistanceWeight()){
             return 1;
         }else{
             return 0;
