@@ -24,7 +24,7 @@ public class Edge {
     @ManyToOne
     private Node node2;
     
-    private ArrayList<Edge> connectedEdges = new ArrayList<>();
+    private ArrayList<Integer> connectedEdges;
 
     /**
      * Distance in meters.
@@ -48,12 +48,9 @@ public class Edge {
      * @author Ida
      */
     
-    public ArrayList<Edge> connectEdges(Node n1, Node n2) {
-    	Edge e = new Edge(n1, n2);
-    	connectedEdges.add(e);
-    	
-    	return connectedEdges;
-    	
+    public void connectEdges(int ID) {
+    	connectedEdges.add(ID);
+        
     }
     /**
      * Calculates the distance between the nodes
@@ -98,12 +95,21 @@ public class Edge {
         return node2;
     }
 
-    public ArrayList<Edge> getConnections() {
+    public ArrayList<Integer> getConnections() {
     	return connectedEdges;
+    }
+    
+    public void setConnections() {
+    	ArrayList<Integer> connectedEdges = new ArrayList<Integer>();
+    	this.connectedEdges = connectedEdges;
     }
 
 	public double getDistance() {
 		return distance;
+	}
+	
+	public int getID() {
+		return id;
 	}
 	
 	 @Override
