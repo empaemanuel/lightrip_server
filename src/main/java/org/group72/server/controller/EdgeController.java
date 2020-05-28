@@ -29,6 +29,18 @@ public class EdgeController {
         return edgeRepository.findAll();
     }
 
+    @RequestMapping(path="/updateEdgeDistance")
+    public @ResponseBody String updateEdgeDistance(){
+        int distanceWeight;
+        for(Edge e: edgeRepository.findAll()){
+            distanceWeight = getDistanceWeight(e);
+            System.err.println("DistanceWeight: "+distanceWeight);
+            edgeRepository.setEdgeDistanceWeight(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude(), distanceWeight);
+        }
+
+        return "Distance weight updated, run forrest run";
+    }
+
     @RequestMapping(path="/updateEdgeLights")
     public @ResponseBody String updateEdgeLights(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -55,12 +67,18 @@ public class EdgeController {
         return "Edges updated with light! Let there be light!";
     }
 
+    private int getDistanceWeight(Edge e){
+        double distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude());
+        return (int)Math.ceil(distance/5);
+    }
+
     private int getLightWeight(Edge e, List<LightNode> lightList){
         int sumOfLights = 0;
         double tempMetersInLatLong = 0.0003;
-        int metersPerRectangle = 10;
-        int distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude()); // get total length between the 2 nodes
-        double rectanglesNeeded = ((double)distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
+        double metersPerRectangle = 10;
+        double distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude()); // get total length between the 2 nodes
+        System.err.println("Distance: " + distance);
+        double rectanglesNeeded = (distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
         double sizeOfLastRectangle = rectanglesNeeded - Math.floor(rectanglesNeeded);
         //next figure out where the place the rectangles - we need to figure out the path between the 2 nodes and place checkpoints every 10 meters
         double latDif = (e.getNode2().getLatitude()-e.getNode1().getLatitude())/rectanglesNeeded;    //total difference in latitude between the 2 nodes divided by amount of rectangles
@@ -90,7 +108,9 @@ public class EdgeController {
                 }
             }
         }
-
-        return Math.abs((int)Math.round(Math.log10(((Math.pow(sumOfLights, 2))/rectanglesNeeded)+1)*5)-10); //complicated mathy things happening, dont worry about it, unless it breaks then we fucked
+        int returnWeight = Math.abs((int)Math.round(Math.log10(((Math.pow(sumOfLights, 2)/2)/rectanglesNeeded)+1)*5)-10); //complicated mathy things happening, dont worry about it, unless it breaks then we fucked
+        if(returnWeight == 0) // no 0's allowed
+            returnWeight++;
+        return returnWeight;
     }
 }

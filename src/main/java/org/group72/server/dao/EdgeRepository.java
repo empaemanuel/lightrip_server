@@ -35,6 +35,11 @@ public interface EdgeRepository extends CrudRepository<Edge, Integer> {
     @Query("UPDATE Edge e SET e.lightWeight = :LightWeight WHERE e.node1.latitude = :Lat1 AND e.node1.longitude = :Long1 AND e.node2.latitude = :Lat2 AND e.node2.longitude = :Long2")
     void setEdgeLightWeight(@Param("Lat1") double latitude1, @Param("Long1") double longitude1, @Param("Lat2") double latitude2, @Param("Long2") double longitude2, @Param("LightWeight") int lightWeight);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Edge e SET e.distanceWeight = :DistanceWeight WHERE e.node1.latitude = :Lat1 AND e.node1.longitude = :Long1 AND e.node2.latitude = :Lat2 AND e.node2.longitude = :Long2")
+    void setEdgeDistanceWeight(@Param("Lat1") double latitude1, @Param("Long1") double longitude1, @Param("Lat2") double latitude2, @Param("Long2") double longitude2, @Param("DistanceWeight") int distanceWeight);
+
     @Query("SELECT e " +
             "FROM Edge e " +
             "WHERE (e.node1.latitude = :latitude " +
