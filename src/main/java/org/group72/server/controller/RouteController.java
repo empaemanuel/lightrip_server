@@ -45,7 +45,9 @@ public class RouteController {
      * @return An array of edges as JSON.
      */
     @GetMapping(path = "/get_route")
-    public @ResponseBody JSONObject generateRoute(Node startStreet, Node endStreet, int lightLevel){
+    public @ResponseBody JSONObject generateRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
+        Node startStreet = new Node(startLat, startLong);
+        Node endStreet = new Node(endLat, endLong);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
         Route route = new Route();
