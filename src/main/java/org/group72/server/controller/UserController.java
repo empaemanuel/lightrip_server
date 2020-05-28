@@ -37,7 +37,30 @@ public class UserController {
         // This returns a JSON or XML with the users
         return userRepository.findAll();
     }
+    
+    @GetMapping(path="/{id}")
+    public User getUser(@PathVariable Integer id){
+        if(userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
+        }
+        return null;
+    }
 
+    @GetMapping(path="/{id}/email")
+    public String getUserEmail(@PathVariable Integer id){
+        if(userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get().getEmail();
+        }
+        return null;
+    }
+
+    @GetMapping(path="/{id}/email")
+    public String getUserName(@PathVariable Integer id){
+        if(userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get().getName();
+        }
+        return null;
+    }
 
     @DeleteMapping(path="/delete")
     public @ResponseBody String deleteUser(@RequestParam Integer id){
