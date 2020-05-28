@@ -48,6 +48,7 @@ public class RouteController {
     public @ResponseBody JSONObject generateRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
         Node startStreet = new Node(startLat, startLong);
         Node endStreet = new Node(endLat, endLong);
+        System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
         Route route = new Route();

@@ -91,6 +91,6 @@ public class EdgeController {
             }
         }
 
-        return Math.abs((int)Math.round(Math.log10((sumOfLights/rectanglesNeeded)+1)*5)-10);
+        return Math.abs((int)Math.round(Math.log10(((Math.pow(sumOfLights, 2))/rectanglesNeeded)+1)*5)-10); //complicated mathy things happening, dont worry about it, unless it breaks then we fucked
     }
 }
