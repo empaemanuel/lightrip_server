@@ -37,7 +37,7 @@ public class RouteController {
     private NodeRepository nodeRepository;
 
 
-    private static Set<Edge> checkedStreets;
+    private Set<Edge> checkedStreets;
 
     /**
      * A demo route manually created.
@@ -59,22 +59,28 @@ public class RouteController {
         PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>();
         pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
         for(Edge e : pQueue){
+            Set<Edge> iterationRoute = new HashSet<>();
+            Set<Edge> suggestion = new HashSet<>();
             checkedStreets.add(e);
             if(e.getOtherNode(currentStreet).equals(endStreet)){
-                returnedRoute.add(e);
-                return returnedRoute;
+                suggestion.add(e);
+                return suggestion;
             }else{
                 if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
                     Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
                     if(theory != null) {
-                        returnedRoute.add(e);
-                        returnedRoute.addAll(theory);
-                        return returnedRoute;
+                        suggestion.add(e);
+                        suggestion.addAll(theory);
+                        if(suggestion.isEmpty() || theory.size() < suggestion.size()){
+                            suggestion = theory;
+                        }
                     }
                 }
             }
+            returnedRoute = suggestion;
+
         }
-        return null;
+        return returnedRoute;
     }
 
 
