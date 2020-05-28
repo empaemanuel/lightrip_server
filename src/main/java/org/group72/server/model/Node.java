@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 @Entity
 @IdClass(NodeKey.class)
-public class Node {
+public class Node implements Comparable<Node>{
 
     @Id
     private double latitude;
@@ -40,5 +40,10 @@ public class Node {
 
     public int getLightLevel() {
         return lightLevel;
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        return 0;
     }
 }

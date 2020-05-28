@@ -37,7 +37,7 @@ public class RouteController {
     private NodeRepository nodeRepository;
 
 
-    private static Set<Node> checkedStreets;
+    private static Set<Edge> checkedStreets;
 
     /**
      * A demo route manually created.
@@ -54,22 +54,19 @@ public class RouteController {
     }
 
 
-    public Set<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-        Set<Node> returnedRoute = new HashSet<>();
-        PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
-        edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()).forEach(edge -> {
-            pQueue.add(edge.getOtherNode(currentStreet));
-        });
-        for(Node e : pQueue){
-            if(e.equals(endStreet)){
+    public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        Set<Edge> returnedRoute = new HashSet<>();
+        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>();
+        pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+        for(Edge e : pQueue){
+            checkedStreets.add(e);
+            if(e.getOtherNode(currentStreet).equals(endStreet)){
                 returnedRoute.add(e);
                 return returnedRoute;
             }else{
                 if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                    Set<Node> theory = findRoute(e, endStreet, lightLevel);
-                    if(theory == null)
-                        return null;
-                    if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {
+                    Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
+                    if(theory != null) {
                         returnedRoute.add(e);
                         returnedRoute.addAll(theory);
                         return returnedRoute;
