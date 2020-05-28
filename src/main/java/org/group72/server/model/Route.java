@@ -16,7 +16,7 @@ public class Route {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private long id;
+    private Integer id;
 
     private Integer ownedBy;
 
