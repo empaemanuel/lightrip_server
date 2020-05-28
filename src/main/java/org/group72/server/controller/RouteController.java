@@ -1,6 +1,7 @@
 package org.group72.server.controller;
 
 import com.jayway.jsonpath.JsonPath;
+import javafx.util.Pair;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -56,10 +58,10 @@ public class RouteController {
 
     public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<Edge>();
+        PriorityQueue<Edge> pQueue = new PriorityQueue<>();
         pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
         for(Edge e : pQueue){
-            Set<Edge> iterationRoute = new HashSet<>();
+            Pair<Integer, Set<Edge>> calculatedRoute = new Pair<>(0, new HashSet<>());
             Set<Edge> suggestion = new HashSet<>();
             checkedStreets.add(e);
             if(e.getOtherNode(currentStreet).equals(endStreet)){
@@ -71,14 +73,17 @@ public class RouteController {
                     if(theory != null) {
                         suggestion.add(e);
                         suggestion.addAll(theory);
-                        if(suggestion.isEmpty() || theory.size() < suggestion.size()){
-                            suggestion = theory;
+                        int distance = 0;
+                        for(Edge d : suggestion){
+                            distance += d.getDistance();
+                        }
+                        if(calculatedRoute.getKey() == 0 || calculatedRoute.getKey() > distance){
+                            calculatedRoute = new Pair<>(distance, suggestion);
                         }
                     }
                 }
             }
-            returnedRoute = suggestion;
-
+            returnedRoute = calculatedRoute.getValue();
         }
         return returnedRoute;
     }
