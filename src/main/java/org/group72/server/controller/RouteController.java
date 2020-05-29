@@ -52,11 +52,7 @@ public class RouteController {
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
         Set<Edge> temPSet = findRoute(startStreet, endStreet, lightLevel);
-        for(Edge e: temPSet)
-            System.err.println("edge: " +e.toString());
-        System.err.println(temPSet);
         routeArray.addAll(temPSet);
-
         response.appendField("route", routeArray);
         checkedStreets.clear();
         return response;
@@ -65,22 +61,17 @@ public class RouteController {
 
     public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
+        Set<Edge> calculatedRoute = new HashSet<>();
         PriorityQueue<Edge> pQueue = new PriorityQueue<>();
         pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
-        System.err.println("Elements in pQ: " +pQueue.size());
-        if(currentStreet.equals(endStreet)){
-            System.err.println("FOUND END PLACE");
-        }
 
         for(Edge e : pQueue){
-            Set<Edge> calculatedRoute = new HashSet<>();
             Set<Edge> suggestion = new HashSet<>();
             if(e.getOtherNode(currentStreet).equals(endStreet)){
                 suggestion.add(e);
-                System.err.println("Suggestion added: " + e.toString());
                 return suggestion;
             }else{
-                if( !checkedStreets.contains(e)) {//e.getLightWeight() <= lightLevel &&
+                if(e.getLightWeight() <= lightLevel && !checkedStreets.contains(e)) {
                     checkedStreets.add(e);
                     Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
                     if(!theory.isEmpty()) {
@@ -102,7 +93,6 @@ public class RouteController {
             returnedRoute = calculatedRoute;
 
         }
-        System.err.println("streets checked: " +checkedStreets.size());
         return returnedRoute;
     }
 

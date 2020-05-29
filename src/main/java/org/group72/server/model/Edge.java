@@ -194,7 +194,7 @@ public class Edge implements Comparable<Edge>{
 
     @Override
     public String toString(){
-        return "ID:"+getId()+"node1.lat:"+node1.getLatitude()+"node1.long:"+node1.getLongitude()+"node2.lat:"+node2.getLatitude()+"node2.long:"+node2.getLongitude();
+        return "ID:"+getId()+", \"node1_latitude\":\""+node1.getLatitude()+"\",\"node1_longitude\":\""+node1.getLongitude()+"\",\"node2_latitude\":\""+node2.getLatitude()+"\",\"node2.longitude\":\""+node2.getLongitude()+"\"";
     }
 
 }
