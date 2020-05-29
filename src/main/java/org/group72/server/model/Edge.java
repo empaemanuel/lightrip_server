@@ -1,5 +1,7 @@
 package org.group72.server.model;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 import java.util.ArrayList;
@@ -43,7 +45,9 @@ public class Edge implements Comparable<Edge>{
     public Edge(Node n1, Node n2){
         this.node1 = n1;
         this.node2 = n2;
+        
     }
+
 
     /**
      * Calculates the distance between the nodes
@@ -163,22 +167,18 @@ public class Edge implements Comparable<Edge>{
         return id;
     }
 
-    public int getDistance() {
-        return distance;
-    }
-
-    public boolean equals(Object o){
-        if(o == this){
-            return true;
-        }
-        if(!(o instanceof Edge)){
-            return false;
-        }
-
-        Edge e = (Edge) o;
-
-        return e.getId() == getId();
-    }
+//    public boolean equals(Object o){
+//        if(o == this){
+//            return true;
+//        }
+//        if(!(o instanceof Edge)){
+//            return false;
+//        }
+//
+//        Edge e = (Edge) o;
+//
+//        return e.getId() == getId();
+//    }
 
     @Override
     public int compareTo(Edge o){
@@ -190,5 +190,30 @@ public class Edge implements Comparable<Edge>{
             return 0;
         }
     }
+
+	public double getDistance() {
+		return distance;
+	}
+	
+	public int getID() {
+		return id;
+	}
+	
+	 @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (o == null || getClass() != o.getClass()) return false;
+	        Edge e = (Edge) o;
+	        return Double.compare(e.getNode1().getLatitude(), getNode1().getLatitude()) == 0 &&
+	                Double.compare(e.getNode1().getLongitude(), getNode1().getLongitude()) == 0 &&
+	                Double.compare(e.getNode2().getLatitude(), getNode2().getLatitude()) == 0 &&
+	                Double.compare(e.getNode2().getLongitude(), getNode2().getLongitude()) == 0;
+	    }
+
+	    @Override
+	    public int hashCode() {
+	        return Objects.hash(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude());
+	    }
+
 
 }
