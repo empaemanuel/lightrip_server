@@ -3,8 +3,8 @@
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import org.group72.server.dao.EdgeRepository;
-import org.group72.server.dao.NodeRepository;
+import org.group72.server.dao.*;
+import org.group72.server.model.Connections;
 import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,8 @@ public class RouteController {
     private EdgeRepository edgeRepository;
     @Autowired
     private NodeRepository nodeRepository;
+    @Autowired
+    private ConnectionsRepository connectionsRepository;
 
     /**
      * A demo route manually created.
@@ -65,57 +67,20 @@ public class RouteController {
         return response;
     }
     
-//    @GetMapping(path = "/routeGenerator")
-//    public @ResponseBody JSONObject routeGenerator(@RequestParam Node node1, @RequestParam Node node2) {
-//    	JSONObject response = new JSONObject();
-//    	
-//    	findRoute(node1, node2);
-//    	
-//    	return response;
-//    }
-//    
-//    private void findRoute(Node n1, Node n2) {
-//    	Edge e = findEdge(n1, n2);
-//
-//    }
-    
-//    private Edge findEdge(Node n1, Node n2) {
-////    	if (edgeRepository.getEdge(n1.getLatitude(), n1.getLongitude(), n2.getLatitude(), n2.getLongitude()) != null) {
-////    		return edgeRepository.getEdge(n1.getLatitude(), n1.getLongitude(), n2.getLatitude(), n2.getLongitude());
-////    	} else {
-//    		Edge edge = edgeRepository.getEdgeFromNode1(n1.getLatitude(), n1.getLongitude());
-//    		for (Edge e : edge.getConnections()) {
-//    			if (e.getNode2().equals(n2)) {
-//    				return e;
-//    			}
-//    			else {
-//    				/* Den bör kolla genom alla edges som kommer från repot
-//    				 * sätta in den med lägst skillnad mot n2 i en array (? pga tre rutter)
-//    				 * och sedan rekursivt fortsätta med detta tills den kommer till n2
-//    				 * @author Ida
-//    				 */
-//    				int[] topThree = new int[3];
-//    				if (topThree[0] == 0) { //TODO behöver gå genom alla tre
-//    					if (e.calculateDistance(e.getNode2().getLatitude(), e.getNode2().getLongitude(), n2.getLatitude(), n2.getLongitude()) //
-//    						< currentBest.calculateDistance()) { 
-//    					
-//    					//TODO: remake calculateDistance to take in two nodes so check can be done
-//    					// to control e.getNode2s distance to n2. 
-//    					}
-//    				}
-//    				topThree[0] = e.hashCode(); //TODO supposed to be ID, check this 
-//    			}
-//    		}
-//    	}
-// //   }
-    
 
-    @GetMapping(path="/connectEdges")
-    public @ResponseBody String connectEdges() {
-        // This returns a JSON or XML with the users
-    	populateDatabase();
-        return "arrays";
+    @GetMapping(path = "/showConnectionsDemo")
+    public @ResponseBody JSONObject getConnections(@RequestParam(value = "edgeId", defaultValue = "4108") int edgeId) {
+    	JSONObject jo = new JSONObject();
+    	jo.appendField("connections", connectionsRepository.getConnections(edgeId));
+    	return jo;
     }
+
+//    @GetMapping(path="/connectEdges")
+//    public @ResponseBody String connectEdges() {
+//        // This returns a JSON or XML with the users
+//    	populateDatabase();
+//        return "arrays";
+//    }
 
     /**
      * SHOULD BE REMOVED OR HIDDEN BEFORE RELEASE.
@@ -162,23 +127,7 @@ public class RouteController {
             nodeRepository.save(n);
             if(prev!=null){
                 Edge e = new Edge(prev, n);
-                
-                /*
-                 * Om vi ska ta in en lista på alla connected edges borde vi ev ha en avsmalning först så den metoden inte
-                 * behöver gå genom ALLA edges. 
-                 * exists a findAllById - should change Edges ID to coordinates
-                 */
-                for (Edge oldEdge : edgeRepository.findAll()) {
-                	if (oldEdge.getNode1() == e.getNode1() && oldEdge.getNode2() != e.getNode2()) {
-                		System.out.println(e + "  1");
-                		e.connectEdges(oldEdge.getID());
-                	}else if(oldEdge.getNode2() == e.getNode2() && oldEdge.getNode1() != e.getNode1()) {
-                		System.out.println(e + "  2");
-                    	e.connectEdges(oldEdge.getID());
-                		}
-                	}
-        			System.out.println(e + "  3");
-                	edgeRepository.save(e);
+                edgeRepository.save(e);
                 }
             	prev = n;
             }
@@ -196,23 +145,16 @@ public class RouteController {
             Node n = new Node(latitude,longitude);
             if(prev!=null){
                 Edge e = edgeRepository.getEdge(n.getLatitude(), n.getLongitude(), prev.getLatitude(), prev.getLongitude());
-                e.setConnections();
-                /*
-                 * Om vi ska ta in en lista på alla connected edges borde vi ev ha en avsmalning först så den metoden inte
-                 * behöver gå genom ALLA edges. 
-                 * exists a findAllById - should change Edges ID to coordinates
+
+                /* Looking through Edges and connecting edges that share a node. 
+                 * Adding shared nodes to table
+                 * @author Ida
                  */
                 for (Edge oldEdge : edgeRepository.findAll()) {
-                	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))) {
-                		e.connectEdges(oldEdge.getID());
-                    	System.out.println(e.getID() + "     getconnects" + e.getConnections() + "    ID: " + oldEdge.getID());
-                		edgeRepository.setEdgeConnectedEdges(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude(), e.getConnections());
-                		System.out.println(e.getID() + "  " + e.getConnections()  + "  1");
-                	}else if(oldEdge.getNode2().equals(e.getNode2()) && !(oldEdge.getNode1().equals(e.getNode1()))) {
-                    	e.connectEdges(oldEdge.getID());
-                    	System.out.println(e.getID() + "     getconnects" + e.getConnections() + "    ID: " + oldEdge.getID());
-                    	edgeRepository.setEdgeConnectedEdges(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude(), e.getConnections());
-                		System.out.println(e.getID() + "  " + e.getConnections()  + "  2");
+                	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
+                			&& !(connectionsRepository.getConnections(e.getID()).contains(oldEdge.getID()))) {
+                		Connections c = new Connections(e.getID(), oldEdge.getID());
+                		connectionsRepository.save(c);
                 		}
                 	}
                 }

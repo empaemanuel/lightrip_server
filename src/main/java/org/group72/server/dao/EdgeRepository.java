@@ -1,10 +1,9 @@
 package org.group72.server.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.group72.server.model.Connections;
 import org.group72.server.model.Edge;
-import org.group72.server.model.Node;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -55,9 +54,5 @@ public interface EdgeRepository extends CrudRepository<Edge, Integer> {
             "and e.node2.longitude = :longitude) ")
     List<Edge> getEdgesBy(@Param("latitude") double latitude, @Param("longitude") double longitude);
     
-    @Transactional
-    @Modifying
-    @Query("UPDATE Edge e SET e.connectedEdges = :ConnectedEdges WHERE e.node1.latitude = :Lat1 AND e.node1.longitude = :Long1 AND e.node2.latitude = :Lat2 AND e.node2.longitude = :Long2")
-       void setEdgeConnectedEdges(@Param("Lat1") double latitude1, @Param("Long1") double longitude1, @Param("Lat2") double latitude2, @Param("Long2") double longitude2, @Param("ConnectedEdges") ArrayList<Integer> connectedEdges);
 
 }
