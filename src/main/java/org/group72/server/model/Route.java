@@ -1,8 +1,9 @@
 package org.group72.server.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
-
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 /**
 *
 *

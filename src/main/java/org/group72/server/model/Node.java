@@ -1,6 +1,8 @@
 package org.group72.server.model;
 
 
+import java.util.Objects;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 
@@ -14,7 +16,6 @@ public class Node {
     @Id
     private double longitude;
 
-    private int lightLevel;
 
     public Node() {
     }
@@ -33,14 +34,17 @@ public class Node {
     }
 
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, longitude);
+    }
+
+
     public ArrayList<Edge> getBorderingEdges() {
         return null;
         //return connectedEdges;
     }
 
-    public int getLightLevel() {
-        return lightLevel;
-    }
 
     @Override
     public boolean equals(Object o) {

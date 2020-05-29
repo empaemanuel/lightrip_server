@@ -36,6 +36,8 @@ public class RouteController {
     private EdgeRepository edgeRepository;
     @Autowired
     private NodeRepository nodeRepository;
+    @Autowired
+    private ConnectionsRepository connectionsRepository;
 
 
     private Set<Edge> checkedStreets = new HashSet<>();
@@ -119,6 +121,19 @@ public class RouteController {
         return response;
     }*/
 
+    @GetMapping(path = "/showConnectionsDemo")
+    public @ResponseBody JSONObject getConnections(@RequestParam(value = "edgeId", defaultValue = "4108") int edgeId) {
+    	JSONObject jo = new JSONObject();
+    	jo.appendField("connections", connectionsRepository.getConnections(edgeId));
+    	return jo;
+    }
+
+//    @GetMapping(path="/connectEdges")
+//    public @ResponseBody String connectEdges() {
+//        // This returns a JSON or XML with the users
+//    	populateDatabase();
+//        return "arrays";
+//    }
 
     /**
      * SHOULD BE REMOVED OR HIDDEN BEFORE RELEASE.
@@ -132,14 +147,14 @@ public class RouteController {
 //    }
 
     private void populateDatabase(){
-        String filePath = "/Users/earth/Desktop/Projects/Java/Projects/pvtGroup72/server/src/main/resources/vitaberglinjer.list";
+        String filePath = "/Users/idaso/documents/vitaberglinjer.list";
 
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(filePath));
             String line = reader.readLine();
             while(line != null){
-                extractPositionsFromJson(line);
+                extractPositionsFromJsonListVersion(line);
                 line = reader.readLine(); //moves to next line
             }
         } catch (IOException e) {
@@ -166,9 +181,42 @@ public class RouteController {
             if(prev!=null){
                 Edge e = new Edge(prev, n);
                 edgeRepository.save(e);
+                }
+            	prev = n;
             }
             prev = n;
         }
-    }
 
-}
+
+
+
+
+    private void extractPositionsFromJsonListVersion(String json){
+        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
+
+        Node prev = null;
+        for(int i=0; i < points.size(); i++) {
+            JSONArray point = (JSONArray) points.get(i);
+            double longitude = (double) point.get(0);
+            double latitude = (double) point.get(1);
+
+            Node n = new Node(latitude,longitude);
+            if(prev!=null){
+                Edge e = edgeRepository.getEdge(n.getLatitude(), n.getLongitude(), prev.getLatitude(), prev.getLongitude());
+
+                /* Looking through Edges and connecting edges that share a node.
+                 * Adding shared nodes to table
+                 * @author Ida
+                 */
+                for (Edge oldEdge : edgeRepository.findAll()) {
+                	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
+                			&& !(connectionsRepository.getConnections(e.getID()).contains(oldEdge.getID()))) {
+                		Connections c = new Connections(e.getID(), oldEdge.getID());
+                		connectionsRepository.save(c);
+                		}
+                	}
+                }
+            	prev = n;
+            }
+        }
+    }

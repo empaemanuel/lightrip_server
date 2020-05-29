@@ -1,5 +1,7 @@
 package org.group72.server.model;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 import java.util.ArrayList;
@@ -139,7 +141,6 @@ public class Edge implements Comparable<Edge>{
         //return connectedEdges;
     }
 
-
     public int getDistanceWeight() {
         return distanceWeight; }
 
@@ -165,7 +166,7 @@ public class Edge implements Comparable<Edge>{
         return id;
     }
 
-
+    @Override
     public boolean equals(Object o){
         if(o == this){
             return true;
@@ -193,6 +194,11 @@ public class Edge implements Comparable<Edge>{
     @Override
     public String toString(){
         return "ID:"+getId()+", \"node1_latitude\":\""+node1.getLatitude()+"\",\"node1_longitude\":\""+node1.getLongitude()+"\",\"node2_latitude\":\""+node2.getLatitude()+"\",\"node2.longitude\":\""+node2.getLongitude()+"\"";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude());
     }
 
 }
