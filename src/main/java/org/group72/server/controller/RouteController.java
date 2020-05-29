@@ -38,7 +38,7 @@ public class RouteController {
     private NodeRepository nodeRepository;
 
 
-    private Set<Edge> checkedStreets;
+    private Set<Edge> checkedStreets = new HashSet<>();
 
     /**
      * A demo route manually created.
@@ -51,9 +51,14 @@ public class RouteController {
         System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
-        Route route = new Route();
-        routeArray.addAll(findRoute(startStreet, endStreet, lightLevel));
-        response.appendField("route", route);
+        Set<Edge> temPSet = findRoute(startStreet, endStreet, lightLevel);
+        for(Edge e: temPSet)
+            System.err.println("edge: " +e.toString());
+        System.err.println(temPSet);
+        routeArray.addAll(temPSet);
+
+        response.appendField("route", routeArray);
+        checkedStreets.clear();
         return response;
     }
 
@@ -62,17 +67,23 @@ public class RouteController {
         Set<Edge> returnedRoute = new HashSet<>();
         PriorityQueue<Edge> pQueue = new PriorityQueue<>();
         pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+        System.err.println("Elements in pQ: " +pQueue.size());
+        if(currentStreet.equals(endStreet)){
+            System.err.println("FOUND END PLACE");
+        }
+
         for(Edge e : pQueue){
             Set<Edge> calculatedRoute = new HashSet<>();
             Set<Edge> suggestion = new HashSet<>();
-            checkedStreets.add(e);
             if(e.getOtherNode(currentStreet).equals(endStreet)){
                 suggestion.add(e);
+                System.err.println("Suggestion added: " + e.toString());
                 return suggestion;
             }else{
-                if(e.getLightWeight() >= lightLevel && !checkedStreets.contains(e)) {
+                if( !checkedStreets.contains(e)) {//e.getLightWeight() <= lightLevel &&
+                    checkedStreets.add(e);
                     Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
-                    if(theory != null) {
+                    if(!theory.isEmpty()) {
                         suggestion.add(e);
                         suggestion.addAll(theory);
                         int distance = 0;
@@ -89,7 +100,9 @@ public class RouteController {
                 }
             }
             returnedRoute = calculatedRoute;
+
         }
+        System.err.println("streets checked: " +checkedStreets.size());
         return returnedRoute;
     }
 

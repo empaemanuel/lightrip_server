@@ -29,7 +29,7 @@ public class Route {
     public Route(){
     }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -39,6 +39,11 @@ public class Route {
 
     public void setOwnedBy(Integer ownedBy) {
         this.ownedBy = ownedBy;
+    }
+
+    @Override
+    public String toString(){
+        return "ID:"+getId() + ","+"OwnedBy:"+ getOwnedBy();
     }
 
     /*public JSONArray getMaxLightRoute() {
