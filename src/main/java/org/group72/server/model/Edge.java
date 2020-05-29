@@ -135,11 +135,7 @@ public class Edge implements Comparable<Edge>{
 
         return sumOfLights; // return total number of lights found
     }*/
-
-    public ArrayList<Edge> getBorderingEdges() {
-        return null;
-        //return connectedEdges;
-    }
+    
 
     public int getDistanceWeight() {
         return distanceWeight; }
