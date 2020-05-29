@@ -41,4 +41,21 @@ public class Node {
     public int getLightLevel() {
         return lightLevel;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (o == this) {
+            return true;
+        }
+
+
+        if (!(o instanceof Node)) {
+            return false;
+        }
+
+        Node n = (Node) o;
+
+        return n.getLatitude() == latitude && n.getLongitude() == longitude;
+    }
 }
