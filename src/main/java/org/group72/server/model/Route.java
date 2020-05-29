@@ -12,7 +12,7 @@ import java.util.Set;
 * */
 
 @Entity // This tells Hibernate to make a table out of this class
-class Route{
+public class Route{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
