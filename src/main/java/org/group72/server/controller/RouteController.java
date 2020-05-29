@@ -3,8 +3,10 @@ package org.group72.server.controller;
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.group72.server.dao.ConnectionsRepository;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
+import org.group72.server.model.Connections;
 import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
 import org.group72.server.model.Route;
@@ -184,7 +186,6 @@ public class RouteController {
                 }
             	prev = n;
             }
-            prev = n;
         }
 
 
@@ -210,8 +211,8 @@ public class RouteController {
                  */
                 for (Edge oldEdge : edgeRepository.findAll()) {
                 	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
-                			&& !(connectionsRepository.getConnections(e.getID()).contains(oldEdge.getID()))) {
-                		Connections c = new Connections(e.getID(), oldEdge.getID());
+                			&& !(connectionsRepository.getConnections(e.getId()).contains(oldEdge.getId()))) {
+                		Connections c = new Connections(e.getId(), oldEdge.getId());
                 		connectionsRepository.save(c);
                 		}
                 	}
