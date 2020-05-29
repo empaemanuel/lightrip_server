@@ -38,7 +38,7 @@ public class RouteController {
     private NodeRepository nodeRepository;
 
 
-    private static Set<Node> checkedStreets;
+    private Set<Edge> checkedStreets;
 
     /**
      * A demo route manually created.
@@ -58,61 +58,61 @@ public class RouteController {
     }
 
 
-    public Set<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-        Set<Node> returnedRoute = new HashSet<>();
-        PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
-        edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()).forEach(edge -> {
-            pQueue.add(edge.getOtherNode(currentStreet));
-        });
-        for(Node e : pQueue){
-            if(e.equals(endStreet)){
-                returnedRoute.add(e);
-                return returnedRoute;
+    public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        Set<Edge> returnedRoute = new HashSet<>();
+        PriorityQueue<Edge> pQueue = new PriorityQueue<>();
+        pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+        for(Edge e : pQueue){
+            Set<Edge> calculatedRoute = new HashSet<>();
+            Set<Edge> suggestion = new HashSet<>();
+            checkedStreets.add(e);
+            if(e.getOtherNode(currentStreet).equals(endStreet)){
+                suggestion.add(e);
+                return suggestion;
             }else{
-                if(e.getLightLevel() >= lightLevel && !checkedStreets.contains(e)) {
-                    Set<Node> theory = findRoute(e, endStreet, lightLevel);
-                    if(theory == null)
-                        return null;
-                    if(theory.contains(endStreet) && (theory.size() < returnedRoute.size() || returnedRoute.isEmpty())) {
-                        returnedRoute.add(e);
-                        returnedRoute.addAll(theory);
-                        return returnedRoute;
+                if(e.getLightWeight() >= lightLevel && !checkedStreets.contains(e)) {
+                    Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
+                    if(theory != null) {
+                        suggestion.add(e);
+                        suggestion.addAll(theory);
+                        int distance = 0;
+                        int finalDistance = 0;
+                        for(Edge d : suggestion){
+                            distance += d.getDistanceWeight();
+                        }
+                        for(Edge d : calculatedRoute)
+                            finalDistance += d.getDistanceWeight();
+                        if(finalDistance == 0 || finalDistance > distance){
+                            calculatedRoute = suggestion;
+                        }
                     }
                 }
             }
+            returnedRoute = calculatedRoute;
         }
-        return null;
+        return returnedRoute;
     }
 
 
     /*public @ResponseBody JSONObject demo(){
-
         JSONObject response = new JSONObject();
         response.appendField("user" , "The ID token can be sent here");
-
         JSONArray route = new JSONArray();
         //59.3121417  18.0911303 -> 59.3123095 18.0912094
         Node n = nodeRepository.getNode(59.3121417,18.0911303);
         route.appendElement(n);
-
         n = nodeRepository.getNode(59.3123095, 18.0912094);
         route.appendElement(n);
-
         n = nodeRepository.getNode(59.3126612, 18.0913751);
         route.appendElement(n);
-
         n = nodeRepository.getNode(59.3126381, 18.0915173);
         route.appendElement(n);
-
         n = nodeRepository.getNode(59.312634, 18.0916134);
         route.appendElement(n);
-
         n = nodeRepository.getNode(59.3126498, 18.0916942);
         route.appendElement(n);
-
         response.appendField("route", route);
         response.appendField("distance", 130);
-
         return response;
     }*/
 
