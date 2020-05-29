@@ -31,15 +31,15 @@ public class EdgeTest {
     @Autowired
     private NodeRepository nodeRepository;
 
-//    @Test
-//    public void testCreateEdge(){
-//        Node node1 = new Node(59.313670, 18.090316);
-//        Node node2 = new Node(59.312827, 18.090316);
-//        Edge edge = new Edge(node1, node2);
-//
-//        assertEquals(59.313670, edge.getNode1().getLatitude());
-//        assertEquals(18.090316, edge.getNode2().getLongitude());
-//    }
+    @Test
+    public void testCreateEdge(){
+        Node node1 = new Node(59.313670, 18.090316);
+        Node node2 = new Node(59.312827, 18.090316);
+        Edge edge = new Edge(node1, node2);
+
+        assertEquals(59.313670, edge.getNode1().getLatitude());
+        assertEquals(18.090316, edge.getNode2().getLongitude());
+    }
 
     @Test
     void getEdgeTest(){
@@ -55,23 +55,20 @@ public class EdgeTest {
         assertEquals(savedEdgeC, getFromDB.get(1));
     }
 
-    /*@Test
-    public void testFileRead(){
-        ObjectMapper objectMapper = new ObjectMapper();
-        ArrayList<Map<String, String>> inputList;
-        ArrayList<LightNode> lightList= new ArrayList<>();
-        try {
-            inputList = objectMapper.readValue(new FileInputStream("D:/AndroidFlutter/lightrip/lighttrip_server/src/main/resources/light_node.json"), ArrayList.class);
-        }catch(Exception e){
-            return;
-        }
-        for(int i = 0; i<inputList.size(); i++) {
-            System.err.println(inputList.get(i).get("latitude")+"-" +inputList.get(i).get("longitude"));
+    @Test
+    void calculateDistanceTest(){
+        Node node1 = new Node(59.3119224, 18.0898548);
+        Node node2 = new Node(59.3119493, 18.0886795);
+        Edge e1 = new Edge(node1, node2);
+        Node node3 = new Node(59.3125934, 18.0933891);
+        Node node4 = new Node(59.3123099, 18.0934757);
+        Edge e2 = new Edge(node3, node4);
 
-            lightList.add(new LightNode(Double.parseDouble(inputList.get(i).get("latitude")), Double.parseDouble(inputList.get(i).get("longitude"))));
-        }
-        assertEquals(null, inputList);
-    }*/
+        assertEquals(67, Math.ceil(e1.calculateDistance(e1.getNode1().getLatitude(), e1.getNode1().getLongitude(), e1.getNode2().getLatitude(), e1.getNode2().getLongitude())));
+        assertEquals(32, Math.ceil(e2.calculateDistance(e2.getNode1().getLatitude(), e2.getNode1().getLongitude(), e2.getNode2().getLatitude(), e2.getNode2().getLongitude())));
+    }
+
+
 
 
 }
