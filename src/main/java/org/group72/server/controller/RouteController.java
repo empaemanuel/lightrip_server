@@ -1,5 +1,4 @@
 package org.group72.server.controller;
-
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -55,7 +55,9 @@ public class RouteController {
         System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
-        Set<Edge> temPSet = findRoute(startStreet, endStreet, lightLevel);
+
+        ArrayList<Node> temPSet = getNodeRoute(startStreet, findRoute(startStreet, endStreet, lightLevel));
+
         routeArray.addAll(temPSet);
         response.appendField("route", routeArray);
         checkedStreets.clear();
@@ -63,21 +65,24 @@ public class RouteController {
     }
 
 
-    public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-        Set<Edge> returnedRoute = new HashSet<>();
-        Set<Edge> calculatedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<>();
-        pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
 
-        for(Edge e : pQueue){
-            Set<Edge> suggestion = new HashSet<>();
+
+
+    public ArrayList<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        ArrayList<Edge> returnedRoute = new ArrayList<>();
+        ArrayList<Edge> calculatedRoute = new ArrayList<>();
+        ArrayList<Edge> edgeQueue = new ArrayList<>();
+        edgeQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+
+        for(Edge e : edgeQueue){
+            ArrayList<Edge> suggestion = new ArrayList<>();
             if(e.getOtherNode(currentStreet).equals(endStreet)){
                 suggestion.add(e);
                 return suggestion;
             }else{
                 if(e.getLightWeight() <= lightLevel && !checkedStreets.contains(e)) {
                     checkedStreets.add(e);
-                    Set<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
+                    ArrayList<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
                     if(!theory.isEmpty()) {
                         suggestion.add(e);
                         suggestion.addAll(theory);
@@ -100,6 +105,18 @@ public class RouteController {
         return returnedRoute;
     }
 
+    public ArrayList<Node> getNodeRoute(Node startNode, ArrayList<Edge> edges){
+        ArrayList<Node> finalRoute = new ArrayList<>();
+        finalRoute.add(startNode);
+        for(Edge e : edges){
+            if(finalRoute.contains(e.getNode1())){
+                finalRoute.add(e.getNode2());
+            }else{
+                finalRoute.add(e.getNode1());
+            }
+        }
+        return finalRoute;
+    }
 
     /*public @ResponseBody JSONObject demo(){
         JSONObject response = new JSONObject();
@@ -129,6 +146,7 @@ public class RouteController {
     	jo.appendField("connections", connectionsRepository.getConnections(edgeId));
     	return jo;
     }
+
 
 //    @GetMapping(path="/connectEdges")
 //    public @ResponseBody String connectEdges() {
@@ -192,6 +210,7 @@ public class RouteController {
 
 
 
+
     private void extractPositionsFromJsonListVersion(String json){
         JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
 
@@ -221,3 +240,4 @@ public class RouteController {
             }
         }
     }
+

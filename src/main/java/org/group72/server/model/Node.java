@@ -16,6 +16,7 @@ public class Node {
     @Id
     private double longitude;
 
+    private int lightLevel;
 
     public Node() {
     }
@@ -33,18 +34,14 @@ public class Node {
         this.longitude=longitude;
     }
 
-
     @Override
     public int hashCode() {
         return Objects.hash(latitude, longitude);
     }
 
-
-    public ArrayList<Edge> getBorderingEdges() {
-        return null;
-        //return connectedEdges;
+    public int getLightLevel() {
+        return lightLevel;
     }
-
 
     @Override
     public boolean equals(Object o) {

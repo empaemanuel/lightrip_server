@@ -30,8 +30,6 @@ public class Edge implements Comparable<Edge>{
     private int distanceWeight;
 
 
-
-
     //Required by JPA.
     public Edge() {
     }
@@ -135,7 +133,6 @@ public class Edge implements Comparable<Edge>{
 
         return sumOfLights; // return total number of lights found
     }*/
-    
 
     public int getDistanceWeight() {
         return distanceWeight; }
@@ -196,5 +193,4 @@ public class Edge implements Comparable<Edge>{
     public int hashCode() {
         return Objects.hash(getNode1().getLatitude(), getNode1().getLongitude(), getNode2().getLatitude(), getNode2().getLongitude());
     }
-
 }
