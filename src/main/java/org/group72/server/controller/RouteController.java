@@ -62,10 +62,10 @@ public class RouteController {
     public Set<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
         Set<Edge> returnedRoute = new HashSet<>();
         Set<Edge> calculatedRoute = new HashSet<>();
-        PriorityQueue<Edge> pQueue = new PriorityQueue<>();
-        pQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+        Set<Edge> edgeQueue = new HashSet<>();
+        edgeQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
 
-        for(Edge e : pQueue){
+        for(Edge e : edgeQueue){
             Set<Edge> suggestion = new HashSet<>();
             if(e.getOtherNode(currentStreet).equals(endStreet)){
                 suggestion.add(e);
