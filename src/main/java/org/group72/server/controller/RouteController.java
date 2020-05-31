@@ -78,6 +78,7 @@ public class RouteController {
             }
         }
         for(Edge e : edgeQueue) {
+            checkedStreets.add(e);
                 ArrayList<Edge> suggestion = new ArrayList<>();
                 if (e.getOtherNode(currentStreet).equals(endStreet)) {
                     suggestion.add(e);
