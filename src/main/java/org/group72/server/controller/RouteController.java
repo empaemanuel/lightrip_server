@@ -61,9 +61,18 @@ public class RouteController {
         return response;
     }
 
-
+    /**
+     * This method performs a breadth first search and saves every step of each path and removes the ancestor list when all descendants are added.
+     * A priority queue makes sure that the current path checked is always the shortest so that when it does find the final destination it has followed the shortest path
+     *
+     * @param currentStreet
+     * @param endStreet
+     * @param lightLevel
+     * @return finalRoute
+     */
 
     public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        ArrayList<Node> finalRoute = new ArrayList<>();
         HashSet<Node> checkedNodes = new HashSet<>();
         PriorityQueue<NodeContainer> frontier = new PriorityQueue<>();
         ArrayList<Node> initList = new ArrayList<>();
@@ -75,7 +84,8 @@ public class RouteController {
             NodeContainer n = (NodeContainer)it.next();
             Node latest = n.getNodes().get(n.getNodes().size() - 1);
             if (latest.equals(endStreet)){
-                return n.getNodes();
+                finalRoute = n.getNodes();
+                break;
             }else{
                 checkedNodes.add(latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
@@ -88,7 +98,7 @@ public class RouteController {
                 }
             }frontier.remove(n);
         }
-        return null;
+        return finalRoute;
     }
 
 
