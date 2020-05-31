@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class handles incoming requests regarding generation, viewing and storing routes
@@ -42,7 +39,7 @@ public class RouteController {
     private ConnectionsRepository connectionsRepository;
 
 
-    private Set<Edge> checkedStreets = new HashSet<>();
+    //private Set<Edge> checkedStreets = new HashSet<>();
 
     /**
      * A demo route manually created.
@@ -56,19 +53,49 @@ public class RouteController {
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
 
-        ArrayList<Node> temPSet = getNodeRoute(startStreet, findRoute(startStreet, endStreet, lightLevel));
+        ArrayList<Node> tempSet = findRoute(startStreet, endStreet, lightLevel);
 
-        routeArray.addAll(temPSet);
+        routeArray.addAll(tempSet);
         response.appendField("route", routeArray);
-        checkedStreets.clear();
+        //checkedStreets.clear();
         return response;
+    }
+
+
+
+    public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+        HashSet<Node> checkedNodes = new HashSet<>();
+        PriorityQueue<NodeContainer> frontier = new PriorityQueue<>();
+        ArrayList<Node> initList = new ArrayList<>();
+        initList.add(currentStreet);
+        frontier.add(new NodeContainer(initList));
+        Iterator it = frontier.iterator();
+
+        while(it.hasNext()){
+            NodeContainer n = (NodeContainer)it.next();
+            Node latest = n.getNodes().get(n.getNodes().size() - 1);
+            if (latest.equals(endStreet)){
+                return n.getNodes();
+            }else{
+                checkedNodes.add(latest);
+                for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
+                    if (e.getLightWeight() <= lightLevel){
+                        ArrayList<Node> path = new ArrayList<>();
+                        path.addAll(n.getNodes());
+                        path.add(e.getOtherNode(latest));
+                        frontier.add(new NodeContainer(path));
+                    }
+                }
+            }frontier.remove(n);
+        }
+        return null;
     }
 
 
 
 
 
-    public ArrayList<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
+    /*public ArrayList<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
         ArrayList<Edge> returnedRoute = new ArrayList<>();
         ArrayList<Edge> calculatedRoute = new ArrayList<>();
         ArrayList<Edge> edgeQueue = new ArrayList<>();
@@ -118,7 +145,7 @@ public class RouteController {
             }
         }
         return finalRoute;
-    }
+    }*/
 
     /*public @ResponseBody JSONObject demo(){
         JSONObject response = new JSONObject();
@@ -241,5 +268,71 @@ public class RouteController {
             prev = n;
         }
     }
+
+
+    class NodeContainer implements Comparable<NodeContainer>{
+        ArrayList<Node> nodes;
+        private Integer finalDistance;
+
+
+
+        NodeContainer(ArrayList<Node> nodes){
+            this.nodes = nodes;
+            setFinalDistance();
+        }
+
+        private void setFinalDistance() {
+            finalDistance = 0;
+            Node previous = null;
+            for(Node n : nodes){
+                if(previous != null){
+                    finalDistance += edgeRepository.getEdge(previous.getLatitude(), previous.getLongitude(), n.getLatitude(), n.getLongitude()).getDistanceWeight();
+                }
+                previous = n;
+            }
+        }
+
+        public Integer getFinalDistance() {
+            return finalDistance;
+        }
+
+        public void addNode(Node node){
+            nodes.add(node);
+            setFinalDistance();
+        }
+
+        public ArrayList<Node> getNodes() {
+            return nodes;
+        }
+
+        @Override
+        public boolean equals(Object o){
+            if(o == this){
+                return true;
+            }
+            if(!(o instanceof NodeContainer)){
+                return false;
+            }
+
+            NodeContainer n = (NodeContainer) o;
+
+            return nodes.equals(n.getNodes());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(nodes);
+        }
+
+        @Override
+        public int compareTo(NodeContainer nodeContainer){
+            return finalDistance.compareTo(nodeContainer.getFinalDistance());
+        }
+    }
+
+
+
+
+
 }
 
