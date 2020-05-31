@@ -74,14 +74,10 @@ public class RouteController {
         ArrayList<Edge> edgeQueue = new ArrayList<>();
         for(Edge e : edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude())){
             if(!checkedStreets.contains(e)){
-                checkedStreets.add(e);
                 edgeQueue.add(e);
             }
         }
-
         for(Edge e : edgeQueue) {
-            if (!checkedStreets.contains(e)){
-                checkedStreets.add(e);
                 ArrayList<Edge> suggestion = new ArrayList<>();
                 if (e.getOtherNode(currentStreet).equals(endStreet)) {
                     suggestion.add(e);
@@ -107,7 +103,6 @@ public class RouteController {
                 }
                 returnedRoute = calculatedRoute;
             }
-        }
         return returnedRoute;
     }
 
