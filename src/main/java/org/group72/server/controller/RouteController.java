@@ -72,35 +72,41 @@ public class RouteController {
         ArrayList<Edge> returnedRoute = new ArrayList<>();
         ArrayList<Edge> calculatedRoute = new ArrayList<>();
         ArrayList<Edge> edgeQueue = new ArrayList<>();
-        edgeQueue.addAll(edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude()));
+        for(Edge e : edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude())){
+            if(!checkedStreets.contains(e)){
+                checkedStreets.add(e);
+                edgeQueue.add(e);
+            }
+        }
 
-        for(Edge e : edgeQueue){
-            ArrayList<Edge> suggestion = new ArrayList<>();
-            if(e.getOtherNode(currentStreet).equals(endStreet)){
-                suggestion.add(e);
-                return suggestion;
-            }else{
-                if(e.getLightWeight() <= lightLevel && !checkedStreets.contains(e)) {
-                    checkedStreets.add(e);
-                    ArrayList<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
-                    if(!theory.isEmpty()) {
-                        suggestion.add(e);
-                        suggestion.addAll(theory);
-                        int distance = 0;
-                        int finalDistance = 0;
-                        for(Edge d : suggestion){
-                            distance += d.getDistanceWeight();
-                        }
-                        for(Edge d : calculatedRoute)
-                            finalDistance += d.getDistanceWeight();
-                        if(finalDistance == 0 || finalDistance > distance){
-                            calculatedRoute = suggestion;
+        for(Edge e : edgeQueue) {
+            if (!checkedStreets.contains(e)){
+                checkedStreets.add(e);
+                ArrayList<Edge> suggestion = new ArrayList<>();
+                if (e.getOtherNode(currentStreet).equals(endStreet)) {
+                    suggestion.add(e);
+                    return suggestion;
+                }else{
+                    if (e.getLightWeight() <= lightLevel) {
+                        ArrayList<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
+                        if (!theory.isEmpty()) {
+                            suggestion.add(e);
+                            suggestion.addAll(theory);
+                            int distance = 0;
+                            int finalDistance = 0;
+                            for (Edge d : suggestion) {
+                                distance += d.getDistanceWeight();
+                            }
+                            for (Edge d : calculatedRoute)
+                                finalDistance += d.getDistanceWeight();
+                            if (finalDistance == 0 || finalDistance > distance) {
+                                calculatedRoute = suggestion;
+                            }
                         }
                     }
                 }
+                returnedRoute = calculatedRoute;
             }
-            returnedRoute = calculatedRoute;
-
         }
         return returnedRoute;
     }
@@ -142,9 +148,9 @@ public class RouteController {
 
     @GetMapping(path = "/showConnectionsDemo")
     public @ResponseBody JSONObject getConnections(@RequestParam(value = "edgeId", defaultValue = "4108") int edgeId) {
-    	JSONObject jo = new JSONObject();
-    	jo.appendField("connections", connectionsRepository.getConnections(edgeId));
-    	return jo;
+        JSONObject jo = new JSONObject();
+        jo.appendField("connections", connectionsRepository.getConnections(edgeId));
+        return jo;
     }
 
 
@@ -201,10 +207,10 @@ public class RouteController {
             if(prev!=null){
                 Edge e = new Edge(prev, n);
                 edgeRepository.save(e);
-                }
-            	prev = n;
             }
+            prev = n;
         }
+    }
 
 
 
@@ -229,15 +235,15 @@ public class RouteController {
                  * @author Ida
                  */
                 for (Edge oldEdge : edgeRepository.findAll()) {
-                	if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
-                			&& !(connectionsRepository.getConnections(e.getId()).contains(oldEdge.getId()))) {
-                		Connections c = new Connections(e.getId(), oldEdge.getId());
-                		connectionsRepository.save(c);
-                		}
-                	}
+                    if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
+                            && !(connectionsRepository.getConnections(e.getId()).contains(oldEdge.getId()))) {
+                        Connections c = new Connections(e.getId(), oldEdge.getId());
+                        connectionsRepository.save(c);
+                    }
                 }
-            	prev = n;
             }
+            prev = n;
         }
     }
+}
 
