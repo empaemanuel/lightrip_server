@@ -51,6 +51,8 @@ public class RouteController {
         Node startStreet = new Node(startLat, startLong);
         Node endStreet = new Node(endLat, endLong);
         List<Node> nodeList = getClosestNode(startStreet, endStreet);
+        if(nodeList == null)
+            return null;
         startStreet = nodeList.get(0);
         endStreet = nodeList.get(1);
         JSONObject response = new JSONObject();
@@ -102,9 +104,10 @@ public class RouteController {
         boolean nodesFound = false;
         boolean startNodeFound = false;
         boolean endNodeFound = false;
-        double searchRadius = 0.0001;
+        double searchRadius = 0.0002;
+        int loopsDone = 0;
 
-        while(!nodesFound) {
+        while(!nodesFound && loopsDone<5) {
             for (Node n : nodeRepository.findAll()) {
                 if(n.getLatitude() < startNode.getLatitude()+searchRadius && n.getLatitude()> startNode.getLatitude()-searchRadius && n.getLongitude() < startNode.getLongitude()+searchRadius && n.getLongitude() > startNode.getLongitude()-searchRadius && !startNodeFound){
                     startNodeFound = true;
@@ -123,8 +126,12 @@ public class RouteController {
             }
             if(startNodeFound && endNodeFound)
                 nodesFound = true;
-            searchRadius *= 2;
+            searchRadius += 2;
+            loopsDone++;
+            if(loopsDone==5&&!nodesFound)
+                return null;
         }
+
         ArrayList<Node> nodeList = new ArrayList<Node>();
         nodeList.add(startNode);
         nodeList.add(endNode);
