@@ -72,33 +72,35 @@ public class RouteController {
      */
 
     public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-        ArrayList<Node> finalRoute = new ArrayList<>();
-        HashSet<Node> checkedNodes = new HashSet<>();
-        PriorityQueue<NodeContainer> frontier = new PriorityQueue<>();
-        ArrayList<Node> initList = new ArrayList<>();
-        initList.add(currentStreet);
-        frontier.add(new NodeContainer(initList));
-        while(!frontier.isEmpty()) {
-            NodeContainer n = frontier.peek();
-            Node latest = n.getNodes().get(n.getNodes().size() - 1);
-            if (latest.equals(endStreet)) {
+        ArrayList<Node> finalRoute = new ArrayList<>(); //The final list of nodes that will be our path
+        HashSet<Node> checkedNodes = new HashSet<>(); //The list of nodes we have already been on and therefore already found the shortest path to
+        PriorityQueue<NodeContainer> frontier = new PriorityQueue<>(); //A queue of node lists which orders by how long in distance each list is
+        ArrayList<Node> initList = new ArrayList<>(); //Initial list to start the queue with
+
+        initList.add(currentStreet); //Initial list gets the first street
+        frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
+
+        while(!frontier.isEmpty()) {  //While queue still has streets to check
+            NodeContainer n = frontier.peek(); //Check the first list, i.e. the one that has the shortest traversal so far.
+            Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
+            if (latest.equals(endStreet)) {  //If the latest node in the list is the end street, we are done and can return the list.
                 finalRoute = n.getNodes();
                 return finalRoute;
             } else {
-                checkedNodes.add(latest);
-                for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
+                checkedNodes.add(latest); //If not done, mark the latest in the list as checked
+                for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) { //Iterate through all paths the last in the list can take.
                     if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(e.getOtherNode(latest))) {
-                        ArrayList<Node> path = new ArrayList<>();
-                        path.addAll(n.getNodes());
-                        path.add(e.getOtherNode(latest));
-                        frontier.add(new NodeContainer(path));
+                        ArrayList<Node> path = new ArrayList<>(); //Create a new list
+                        path.addAll(n.getNodes()); //Add all nodes from previous list
+                        path.add(e.getOtherNode(latest)); //And add the new one we found
+                        frontier.add(new NodeContainer(path)); //Add to queue
                     }
                 }
             }
-            frontier.remove(n);
+            frontier.remove(n); //After we've created paths for all variations of the latest, we can remove the ancestor
         }
 
-        return finalRoute;
+        return finalRoute; //If here, there is no path.
     }
 
     private List<Node> getClosestNode(Node startNode, Node endNode){
