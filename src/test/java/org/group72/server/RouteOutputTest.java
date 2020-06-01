@@ -8,6 +8,7 @@ import org.group72.server.model.Node;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class RouteTest {
+public class RouteOutputTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,48 +46,27 @@ public class RouteTest {
     @Autowired
     private EdgeRepository edgeRepository;
 
-    @MockBean
+    @InjectMocks
     private RouteController routeController;
 
     @Test
-    public void testHttpCallToGetRoute() throws Exception{
-        mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9")
-                .contentType("application/json"))
-                .andExpect(status().isOk());
-
-        ArgumentCaptor<Double> coordCaptor = ArgumentCaptor.forClass(Double.class);
-        verify(routeController, times(1)).generateRoute(coordCaptor.capture(),coordCaptor.capture(),coordCaptor.capture(),coordCaptor.capture(), eq(9));
-        assertEquals(59.3125267, coordCaptor.getAllValues().get(0));
-        assertEquals(18.0881813, coordCaptor.getAllValues().get(1));
-        assertEquals(59.3131301, coordCaptor.getAllValues().get(2));
-        assertEquals(18.0882606, coordCaptor.getAllValues().get(3));
-    }
-
-    /*@Test
-    public void testOutputSerialization() throws Exception{    //IF GET ROUTE STARTS WORKING BUT IT STARTS COMPLAINING HERE IT IS BECAUSE THIS TEST IS WRITTEN TO EXPECT NO EDGE TO BE FOUND, ADD EDGES EXPECTED TO BE FOUND!
-        assertEquals(true, mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9"))
+    public void testOutputSerialization1() throws Exception{
+         mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(""))));
-    }*/
-
-    @Test
-    public void testGetEdges(){
-        List<Edge> edgeList1 = edgeRepository.getEdgesBy(59.3111944,18.088632);
-        List<Edge> edgeList2 = edgeRepository.getEdgesBy( 59.311604, 18.09461);
-        assertEquals(3, edgeList1.size());
-        assertEquals(4, edgeList2.size());
+                .andExpect(content().string(containsString("\"latitude\":59.3125267,\"longitude\":18.0881813")))
+                .andExpect(content().string(containsString("\"latitude\":59.3126081,\"longitude\":18.0881293")))
+                 .andExpect(content().string(containsString("\"latitude\":59.3126381,\"longitude\":18.0880875")));
     }
 
     @Test
-    public void testNodeExists(){
-        Node node = new Node(59.3127258, 18.0937475); //intersection that exists
-
-        List<Edge> edgeList = edgeRepository.getEdgesBy(node.getLatitude(), node.getLongitude());
-        assertNotEquals(0, edgeList.size());
+    public void testOutputSerialization2() throws Exception{
+        mockMvc.perform(get("/get_route/get_route?startLat=59.312161&startLong=18.087463&endLat=59.311612&endLong=18.089634&lightLevel=10"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("\"latitude\":59.3121651,\"longitude\":18.0876393")))
+                .andExpect(content().string(containsString("\"latitude\":59.3120329,\"longitude\":18.0877661")))
+                .andExpect(content().string(containsString("\"latitude\":59.3119836,\"longitude\":18.0878746")));
     }
-
-
-
 
 }

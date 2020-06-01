@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -67,8 +70,6 @@ public class EdgeTest {
         assertEquals(67, Math.ceil(e1.calculateDistance(e1.getNode1().getLatitude(), e1.getNode1().getLongitude(), e1.getNode2().getLatitude(), e1.getNode2().getLongitude())));
         assertEquals(32, Math.ceil(e2.calculateDistance(e2.getNode1().getLatitude(), e2.getNode1().getLongitude(), e2.getNode2().getLatitude(), e2.getNode2().getLongitude())));
     }
-
-
 
 
 }
