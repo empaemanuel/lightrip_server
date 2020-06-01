@@ -52,29 +52,9 @@ public class RouteController {
         System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
-
         ArrayList<Node> tempSet = findRoute(startStreet, endStreet, lightLevel);
-
         routeArray.addAll(tempSet);
         response.appendField("route", routeArray);
-        //checkedStreets.clear();
-        return response;
-    }
-
-    @GetMapping(path = "/test")
-    public @ResponseBody JSONObject testRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
-        Node startStreet = new Node(startLat, startLong);
-        Node endStreet = new Node(endLat, endLong);
-        System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
-        JSONObject response = new JSONObject();
-        JSONArray routeArray = new JSONArray();
-
-        ArrayList<Node> tempSet = new ArrayList<>();
-        tempSet.add(startStreet);
-
-        routeArray.addAll(tempSet);
-        response.appendField("route", routeArray);
-        //checkedStreets.clear();
         return response;
     }
 
@@ -95,14 +75,11 @@ public class RouteController {
         ArrayList<Node> initList = new ArrayList<>();
         initList.add(currentStreet);
         frontier.add(new NodeContainer(initList));
-        Iterator it = frontier.iterator();
-
-        while(it.hasNext()){
-            NodeContainer n = (NodeContainer)it.next();
+            NodeContainer n = frontier.peek();
             Node latest = n.getNodes().get(n.getNodes().size() - 1);
             if (latest.equals(endStreet)){
                 finalRoute = n.getNodes();
-                break;
+                return finalRoute;
             }else{
                 checkedNodes.add(latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
@@ -114,7 +91,7 @@ public class RouteController {
                     }
                 }
             }frontier.remove(n);
-        }
+
         return finalRoute;
     }
 
