@@ -55,12 +55,9 @@ public class RouteController {
         endStreet = nodeList.get(1);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
-
         ArrayList<Node> tempSet = findRoute(startStreet, endStreet, lightLevel);
-
         routeArray.addAll(tempSet);
         response.appendField("route", routeArray);
-        //checkedStreets.clear();
         return response;
     }
 
@@ -81,14 +78,11 @@ public class RouteController {
         ArrayList<Node> initList = new ArrayList<>();
         initList.add(currentStreet);
         frontier.add(new NodeContainer(initList));
-        Iterator it = frontier.iterator();
-
-        while(it.hasNext()){
-            NodeContainer n = (NodeContainer)it.next();
+            NodeContainer n = frontier.peek();
             Node latest = n.getNodes().get(n.getNodes().size() - 1);
             if (latest.equals(endStreet)){
                 finalRoute = n.getNodes();
-                break;
+                return finalRoute;
             }else{
                 checkedNodes.add(latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
@@ -100,7 +94,7 @@ public class RouteController {
                     }
                 }
             }frontier.remove(n);
-        }
+
         return finalRoute;
     }
 
