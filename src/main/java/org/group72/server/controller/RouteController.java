@@ -87,7 +87,7 @@ public class RouteController {
             } else {
                 checkedNodes.add(latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
-                    if (e.getLightWeight() <= lightLevel) {
+                    if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(e.getOtherNode(latest))) {
                         ArrayList<Node> path = new ArrayList<>();
                         path.addAll(n.getNodes());
                         path.add(e.getOtherNode(latest));
