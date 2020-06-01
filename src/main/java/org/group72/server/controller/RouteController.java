@@ -61,6 +61,23 @@ public class RouteController {
         return response;
     }
 
+    @GetMapping(path = "/test")
+    public @ResponseBody JSONObject testRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
+        Node startStreet = new Node(startLat, startLong);
+        Node endStreet = new Node(endLat, endLong);
+        System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
+        JSONObject response = new JSONObject();
+        JSONArray routeArray = new JSONArray();
+
+        ArrayList<Node> tempSet = new ArrayList<>();
+        tempSet.add(startStreet);
+
+        routeArray.addAll(tempSet);
+        response.appendField("route", routeArray);
+        //checkedStreets.clear();
+        return response;
+    }
+
     /**
      * This method performs a breadth first search and saves every step of each path and removes the ancestor list when all descendants are added.
      * A priority queue makes sure that the current path checked is always the shortest so that when it does find the final destination it has followed the shortest path
