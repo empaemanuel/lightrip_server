@@ -78,7 +78,7 @@ public class RouteController {
         ArrayList<Node> initList = new ArrayList<>();
         initList.add(currentStreet);
         frontier.add(new NodeContainer(initList));
-        while(finalRoute.isEmpty() || !frontier.isEmpty()) {
+        while(!frontier.isEmpty()) {
             NodeContainer n = frontier.peek();
             Node latest = n.getNodes().get(n.getNodes().size() - 1);
             if (latest.equals(endStreet)) {
