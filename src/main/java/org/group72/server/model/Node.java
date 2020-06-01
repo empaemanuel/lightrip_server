@@ -59,4 +59,9 @@ public class Node {
 
         return n.getLatitude() == latitude && n.getLongitude() == longitude;
     }
+
+    @Override
+    public String toString(){
+        return "Latitude: "+ getLatitude() + " - Longitude: " + getLongitude();
+    }
 }

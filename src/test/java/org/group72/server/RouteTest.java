@@ -1,10 +1,14 @@
 package org.group72.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONObject;
+import org.aspectj.lang.annotation.Before;
 import org.group72.server.controller.RouteController;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,15 +25,17 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,6 +54,11 @@ public class RouteTest {
     @MockBean
     private RouteController routeController;
 
+    @BeforeEach
+    public void setUp(){
+        when(routeController.generateRoute(any(), any(), any(), any(), any())).thenCallRealMethod().thenReturn(null);
+    }
+
     @Test
     public void testHttpCallToGetRoute() throws Exception{
         mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9")
@@ -62,12 +73,11 @@ public class RouteTest {
         assertEquals(18.0882606, coordCaptor.getAllValues().get(3));
     }
 
-    /*@Test
+    /*@Test          //broken af, idk why
     public void testOutputSerialization() throws Exception{    //IF GET ROUTE STARTS WORKING BUT IT STARTS COMPLAINING HERE IT IS BECAUSE THIS TEST IS WRITTEN TO EXPECT NO EDGE TO BE FOUND, ADD EDGES EXPECTED TO BE FOUND!
-        assertEquals(true, mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9"))
-                .andDo(print())
+        mockMvc.perform(get("/get_route/get_route?startLat=59.3125267&startLong=18.0881813&endLat=59.3131301&endLong=18.0882606&lightLevel=9"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(""))));
+                .andDo(print());
     }*/
 
     @Test
