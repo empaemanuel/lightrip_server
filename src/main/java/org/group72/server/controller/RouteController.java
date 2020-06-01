@@ -108,7 +108,7 @@ public class RouteController {
         boolean nodesFound = false;
         boolean startNodeFound = false;
         boolean endNodeFound = false;
-        double searchRadius = 0.0002;
+        double searchRadius = 0.0001;
 
         while(!nodesFound) {
             for (Node n : nodeRepository.findAll()) {
