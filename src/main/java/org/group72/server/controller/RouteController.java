@@ -57,7 +57,7 @@ public class RouteController {
         endStreet = nodeList.get(1);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
-        ArrayList<Node> tempSet = findParallelRoute(startStreet, endStreet, lightLevel);
+        ArrayList<Node> tempSet = findRoute(startStreet, endStreet, lightLevel);
         routeArray.addAll(tempSet);
         response.appendField("route", routeArray);
         return response;
@@ -111,7 +111,7 @@ public class RouteController {
         PriorityQueue<NodeContainer> frontier = new PriorityQueue<>(); //A queue of node lists which orders by how long in distance each list is
         ArrayList<Node> initList = new ArrayList<>(); //Initial list to start the queue with
 
-        initList.add(currentStreet); //Initial list gets the first street
+        initList.add(currentStreet);     //Initial list gets the first street
         frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
 
         while(!frontier.isEmpty()) {  //While queue still has streets to check
