@@ -47,12 +47,4 @@ public class LightTest {
     }
 
 
-
-//    @Test
-//    public void testGetLightNode(){
-//        //List<LightNode> result = lightController.getLightNode(59.3132931, 18.0869669, 59.3131981, 18.086947);
-//        LightNode result = lightRepository.getLightNode(59.3079001,18.0908757);
-//        assertEquals(59.3079001, result.getLatitude());
-//        assertEquals(18.0908757, result.getLongitude());
-//    }
 }
