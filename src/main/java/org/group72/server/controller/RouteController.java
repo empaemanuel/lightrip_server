@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.plaf.synth.SynthScrollBarUI;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -49,7 +50,9 @@ public class RouteController {
     public @ResponseBody JSONObject generateRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
         Node startStreet = new Node(startLat, startLong);
         Node endStreet = new Node(endLat, endLong);
-        System.err.println(startLat +" - "+ startLong +" - "+ endLat +" - "+ endLong +" - "+ lightLevel);
+        List<Node> nodeList = getClosestNode(startStreet, endStreet);
+        startStreet = nodeList.get(0);
+        endStreet = nodeList.get(1);
         JSONObject response = new JSONObject();
         JSONArray routeArray = new JSONArray();
 
@@ -101,7 +104,38 @@ public class RouteController {
         return finalRoute;
     }
 
+    private List<Node> getClosestNode(Node startNode, Node endNode){
+        boolean nodesFound = false;
+        boolean startNodeFound = false;
+        boolean endNodeFound = false;
+        double searchRadius = 0.0002;
 
+        while(!nodesFound) {
+            for (Node n : nodeRepository.findAll()) {
+                if(n.getLatitude() < startNode.getLatitude()+searchRadius && n.getLatitude()> startNode.getLatitude()-searchRadius && n.getLongitude() < startNode.getLongitude()+searchRadius && n.getLongitude() > startNode.getLongitude()-searchRadius && !startNodeFound){
+                    startNodeFound = true;
+                    System.err.println(startNode.toString());
+                    startNode = n;
+                    System.err.println("StartNode Found!");
+                    System.err.println(n.toString());
+                }
+                if(n.getLatitude() < endNode.getLatitude()+searchRadius && n.getLatitude()> endNode.getLatitude()-searchRadius && n.getLongitude() < endNode.getLongitude()+searchRadius && n.getLongitude() > endNode.getLongitude()-searchRadius && !endNodeFound){
+                    endNodeFound = true;
+                    System.err.println(endNode.toString());
+                    endNode = n;
+                    System.err.println("EndNode Found!");
+                    System.err.println(n.toString());
+                }
+            }
+            if(startNodeFound && endNodeFound)
+                nodesFound = true;
+            searchRadius *= 2;
+        }
+        ArrayList<Node> nodeList = new ArrayList<Node>();
+        nodeList.add(startNode);
+        nodeList.add(endNode);
+        return nodeList;
+    }
 
 
 

@@ -2,6 +2,7 @@ package org.group72.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.group72.server.dao.EdgeRepository;
+import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
 import org.group72.server.model.LightNode;
 import org.group72.server.model.Node;
@@ -22,6 +23,7 @@ public class EdgeController {
 
     @Autowired
     private EdgeRepository edgeRepository;
+
 
     @GetMapping(path="/allEdges")
     public @ResponseBody Iterable<Edge> getAllEdges() {
