@@ -75,22 +75,25 @@ public class RouteController {
         ArrayList<Node> initList = new ArrayList<>();
         initList.add(currentStreet);
         frontier.add(new NodeContainer(initList));
+        while(finalRoute.isEmpty() && !frontier.isEmpty()) {
             NodeContainer n = frontier.peek();
             Node latest = n.getNodes().get(n.getNodes().size() - 1);
-            if (latest.equals(endStreet)){
+            if (latest.equals(endStreet)) {
                 finalRoute = n.getNodes();
                 return finalRoute;
-            }else{
+            } else {
                 checkedNodes.add(latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
-                    if (e.getLightWeight() <= lightLevel){
+                    if (e.getLightWeight() <= lightLevel) {
                         ArrayList<Node> path = new ArrayList<>();
                         path.addAll(n.getNodes());
                         path.add(e.getOtherNode(latest));
                         frontier.add(new NodeContainer(path));
                     }
                 }
-            }frontier.remove(n);
+            }
+            frontier.remove(n);
+        }
 
         return finalRoute;
     }
