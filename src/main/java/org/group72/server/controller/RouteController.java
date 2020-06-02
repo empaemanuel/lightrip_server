@@ -83,7 +83,7 @@ public class RouteController {
         frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
 
         while(!frontier.isEmpty()) {  //While queue still has streets to check
-            NodeContainer n = frontier.peek(); //Check the first list, i.e. the one that has the shortest traversal so far.
+            NodeContainer n = frontier.poll(); //Check the first list, i.e. the one that has the shortest traversal so far and remove from queue.
             Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
             if (latest.equals(endStreet)) {  //If the latest node in the list is the end street, we are done and can return the list.
                 finalRoute = n.getNodes();
@@ -99,13 +99,12 @@ public class RouteController {
                     }
                 }
             }
-            frontier.remove(n); //After we've created paths for all variations of the latest, we can remove the ancestor
         }
 
         return finalRoute; //If here, there is no path.
     }
 
-    public ArrayList<Node> findParallelRoute(Node currentStreet, Node endStreet, int lightLevel){
+    /*public ArrayList<Node> findParallelRoute(Node currentStreet, Node endStreet, int lightLevel){
         ArrayList<Node> finalRoute = new ArrayList<>(); //The final list of nodes that will be our path
         HashSet<Node> checkedNodes = new HashSet<>(); //The list of nodes we have already been on and therefore already found the shortest path to
         PriorityQueue<NodeContainer> frontier = new PriorityQueue<>(); //A queue of node lists which orders by how long in distance each list is
@@ -134,7 +133,7 @@ public class RouteController {
         }
 
         return finalRoute; //If here, there is no path.
-    }
+    }*/
 
     private List<Node> getClosestNode(Node startNode, Node endNode){
         boolean nodesFound = false;
