@@ -1,11 +1,17 @@
 package org.group72.server.controller;
 
 import org.group72.server.model.Greeting;
+import org.group72.server.model.LightNode;
+import org.group72.server.script.EdgeScript;
+import org.group72.server.script.LightScript;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
@@ -23,4 +29,25 @@ public class MainController {
         return "Greetings from lightrip server!";
     }
 
+
+    @Autowired
+    EdgeScript es;
+
+    @RequestMapping(path="/loadEdges")
+    public @ResponseBody String loadEdges(){
+        //Se till att filformatet är .list och lägg till hela filvägen nedan.
+        String filePath = ".....rutter.list";
+        es.loadEdgesAndNodes(filePath);
+        return "done!";
+    }
+
+    @Autowired
+    LightScript ls;
+    @RequestMapping(path="/loadLights")
+    public @ResponseBody String loadLights(){
+        //Se till att filformatet är .list och lägg till hela filvägen nedan.
+        String filePath = ".....belysning.list";
+        ls.load(filePath);
+        return "done!";
+    }
 }
