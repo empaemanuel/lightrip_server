@@ -35,8 +35,9 @@ public class MainController {
 
     @RequestMapping(path="/loadEdges")
     public @ResponseBody String loadEdges(){
-
-        es.loadEdgesAndNodes("/Users/earth/Desktop/lightrip/lightrip_server/src/main/resources/200602rutter.list");
+        //Se till att filformatet är .list och lägg till hela filvägen nedan.
+        String filePath = ".....rutter.list";
+        es.loadEdgesAndNodes(filePath);
         return "done!";
     }
 
@@ -44,8 +45,9 @@ public class MainController {
     LightScript ls;
     @RequestMapping(path="/loadLights")
     public @ResponseBody String loadLights(){
-
-        ls.load("/Users/earth/Desktop/lightrip/lightrip_server/src/main/resources/200602belysning.list");
+        //Se till att filformatet är .list och lägg till hela filvägen nedan.
+        String filePath = ".....belysning.list";
+        ls.load(filePath);
         return "done!";
     }
 }
