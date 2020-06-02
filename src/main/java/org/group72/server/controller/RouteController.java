@@ -81,11 +81,6 @@ public class RouteController {
      */
 
     public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-
-        for(Edge e : edgeRepository.getEdgesBy(endStreet.getLatitude(), endStreet.getLongitude())){
-            System.err.println("Adjacent to end node: " + e.getOtherNode(endStreet).toString();
-        }
-
         ArrayList<Node> finalRoute = new ArrayList<>(); //The final list of nodes that will be our path
         HashSet<Node> checkedNodes = new HashSet<>(); //The list of nodes we have already been on and therefore already found the shortest path to
         PriorityQueue<NodeContainer> frontier = new PriorityQueue<>(); //A queue of node lists which orders by how long in distance each list is
@@ -102,13 +97,13 @@ public class RouteController {
             System.err.println("latest node: " + latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
                     Node foundNode = e.getOtherNode(latest);//Iterate through all paths the last in the list can take.
-                    if(foundNode.equals(endStreet)){
-                        finalRoute = n.getNodes();
-                        finalRoute.add(foundNode);
-                        System.err.println("Final route found!");
-                        return finalRoute;
-                    }
-                    else if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(foundNode)) {
+                    if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(foundNode)) {
+                        if(foundNode.equals(endStreet)){
+                            finalRoute = n.getNodes();
+                            finalRoute.add(foundNode);
+                            System.err.println("Final route found!");
+                            return finalRoute;
+                        }
                         checkedNodes.add(e.getOtherNode(latest));
                         System.err.println("CheckedNodes size: "+checkedNodes.size());
                         System.err.println("new edge found: "+ e.toString());
