@@ -49,7 +49,7 @@ public class EdgeController {
         ArrayList<Map<String, String>> inputList;
         ArrayList<LightNode> lightList= new ArrayList<>();
         try {
-            inputList = objectMapper.readValue(new FileInputStream("D:/AndroidFlutter/lightrip/lighttrip_server/src/main/resources/light_node.json"), ArrayList.class); //need to update file path
+            inputList = objectMapper.readValue(new FileInputStream("D:/AndroidFlutter/lightrip/lighttrip_server/src/main/resources/light_node.json"), ArrayList.class);
         }catch(Exception e){
             return e.getMessage();
         }
@@ -71,7 +71,7 @@ public class EdgeController {
 
     private int getDistanceWeight(Edge e){
         double distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude());
-        return (int)Math.ceil(distance/5);
+        return (int)Math.ceil(distance/5)+1;
     }
 
     private int getLightWeight(Edge e, List<LightNode> lightList){

@@ -43,16 +43,23 @@ public class RouteController {
     //private Set<Edge> checkedStreets = new HashSet<>();
 
     /**
-     * A demo route manually created.
-     * @return An array of edges as JSON.
+     * Http call to generate a route between the gives nodes with regard to
+     * minimum required light weight
+     *
+     * @param startLat latitude of the start node
+     * @param startLong longitude of the start node
+     * @param endLat latitude of the end node
+     * @param endLong longitude of the end node
+     * @param lightLevel minimum required light weigh of edges we can use to generate the route
+     * @return An array of nodes as JSON.
      */
     @GetMapping(path = "/get_route")
     public @ResponseBody JSONObject generateRoute(@RequestParam double startLat, @RequestParam double startLong, @RequestParam double endLat, @RequestParam double endLong, @RequestParam Integer lightLevel){
-        Node startStreet = new Node(startLat, startLong);
+        Node startStreet = new Node(startLat, startLong);   //turn the coordinates into node objects
         Node endStreet = new Node(endLat, endLong);
-        List<Node> nodeList = getClosestNode(startStreet, endStreet);
-        if(nodeList == null)
-            return null;
+        List<Node> nodeList = getClosestNode(startStreet, endStreet);  //find the closest node to the input parameters from our database and save them in a list, index 0=startNode, index 1=endNode
+        if(nodeList == null) //make sure we found a nearby node
+            return null;    //if no node found, exit
         startStreet = nodeList.get(0);
         endStreet = nodeList.get(1);
         JSONObject response = new JSONObject();
@@ -81,17 +88,24 @@ public class RouteController {
 
         initList.add(currentStreet); //Initial list gets the first street
         frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
+        System.err.println("initList size: "+ initList.size());
+        System.err.println("frontier size: "+ frontier.size());
 
         while(!frontier.isEmpty()) {  //While queue still has streets to check
+            System.err.println("frontier size: " + frontier.size());
             NodeContainer n = frontier.peek(); //Check the first list, i.e. the one that has the shortest traversal so far.
             Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
+            System.err.println("latest node: "+latest);
             if (latest.equals(endStreet)) {  //If the latest node in the list is the end street, we are done and can return the list.
                 finalRoute = n.getNodes();
+                System.err.println("Final route found!");
                 return finalRoute;
             } else {
+                System.err.println("CheckedNodes size: "+checkedNodes.size());
                 checkedNodes.add(latest); //If not done, mark the latest in the list as checked
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) { //Iterate through all paths the last in the list can take.
                     if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(e.getOtherNode(latest))) {
+                        System.err.println("new edge found: "+ e.toString());
                         ArrayList<Node> path = new ArrayList<>(); //Create a new list
                         path.addAll(n.getNodes()); //Add all nodes from previous list
                         path.add(e.getOtherNode(latest)); //And add the new one we found
@@ -101,7 +115,7 @@ public class RouteController {
             }
             frontier.remove(n); //After we've created paths for all variations of the latest, we can remove the ancestor
         }
-
+        System.err.println("no route found:(");
         return finalRoute; //If here, there is no path.
     }
 
