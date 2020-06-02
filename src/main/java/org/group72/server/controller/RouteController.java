@@ -95,23 +95,24 @@ public class RouteController {
             System.err.println("Frontier size: "+ frontier.size());
             NodeContainer n = frontier.poll(); //Check the first list, i.e. the one that has the shortest traversal so far and remove from queue.
             Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
-            System.err.println("latest node: "+latest);
-            if (latest.equals(endStreet)) {  //If the latest node in the list is the end street, we are done and can return the list.
-                finalRoute = n.getNodes();
-                System.err.println("Final route found!");
-                return finalRoute;
-            } else {
-                for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) { //Iterate through all paths the last in the list can take.
-                    if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(e.getOtherNode(latest))) {
+            System.err.println("latest node: " + latest);
+                for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
+                    Node foundNode = e.getOtherNode(latest);//Iterate through all paths the last in the list can take.
+                    if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(foundNode)) {
                         checkedNodes.add(e.getOtherNode(latest));
                         System.err.println("CheckedNodes size: "+checkedNodes.size());
                         System.err.println("new edge found: "+ e.toString());
                         ArrayList<Node> path = new ArrayList<>(); //Create a new list
                         path.addAll(n.getNodes()); //Add all nodes from previous list
                         path.add(e.getOtherNode(latest)); //And add the new one we found
+                        if (path.get(path.size()-1).equals(endStreet)){  //If the latest node in the list is the end street, we are done and can return the list.
+                            finalRoute = path;
+                            System.err.println("Final route found!");
+                            return finalRoute;
+                        }
                         frontier.add(new NodeContainer(path)); //Add to queue
                     }
-                }
+
             }
         }
         System.err.println("No path found:(");
