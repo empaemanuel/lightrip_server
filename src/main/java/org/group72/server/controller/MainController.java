@@ -36,7 +36,7 @@ public class MainController {
     @RequestMapping(path="/loadEdges")
     public @ResponseBody String loadEdges(){
         //Se till att filformatet är .list och lägg till hela filvägen nedan.
-        String filePath = ".....rutter.list";
+        String filePath = "D:/AndroidFlutter/lightrip/lighttrip_server/src/main/resources/rutter.list";
         es.loadEdgesAndNodes(filePath);
         return "done!";
     }
@@ -46,7 +46,7 @@ public class MainController {
     @RequestMapping(path="/loadLights")
     public @ResponseBody String loadLights(){
         //Se till att filformatet är .list och lägg till hela filvägen nedan.
-        String filePath = ".....belysning.list";
+        String filePath = "D:/AndroidFlutter/lightrip/lighttrip_server/src/main/resources/belysning.list";
         ls.load(filePath);
         return "done!";
     }

@@ -49,7 +49,7 @@ public class EdgeScript {
 
     private void readEdgesAndNodesFromLine(String json) {
         JSONArray nodes = JsonPath.read(json, "$.geometry.coordinates");
-        ArrayList<ArrayList<Double>> arr = (ArrayList) nodes.get(0);
+        ArrayList<ArrayList<Double>> arr = (ArrayList) nodes;
         Node prev = null;
 
         System.out.println("NEW LINE==========================");

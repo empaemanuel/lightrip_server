@@ -381,6 +381,7 @@ public class RouteController {
             Node previous = null;
             for(Node n : nodes){
                 if(previous != null){
+                    System.err.println(previous.getLatitude()+" - "+ previous.getLongitude()+" - "+ n.getLatitude()+ " - "+ n.getLongitude());
                     finalDistance += edgeRepository.getEdge(previous.getLatitude(), previous.getLongitude(), n.getLatitude(), n.getLongitude()).getDistanceWeight();
                 }
                 previous = n;
