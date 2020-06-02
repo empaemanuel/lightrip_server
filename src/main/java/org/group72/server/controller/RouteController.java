@@ -176,7 +176,7 @@ public class RouteController {
             }
             if(startNodeFound && endNodeFound)
                 nodesFound = true;
-            searchRadius += 2;
+            searchRadius += 0.0002;
             loopsDone++;
             if(loopsDone==5&&!nodesFound)
                 return null;
