@@ -82,7 +82,7 @@ public class RouteController {
 
     public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
 
-        for(Edge e : edgeRepository.getEdgesBy(endStreet.getLatitude(), endStreet.getLatitude())){
+        for(Edge e : edgeRepository.getEdgesBy(endStreet.getLatitude(), endStreet.getLongitude())){
             System.err.println("Adjacent to end node: " + e.getOtherNode(endStreet).toString();
         }
 
