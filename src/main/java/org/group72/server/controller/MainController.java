@@ -1,6 +1,5 @@
 package org.group72.server.controller;
 
-import javafx.scene.effect.Light;
 import org.group72.server.model.Greeting;
 import org.group72.server.model.LightNode;
 import org.group72.server.script.EdgeScript;
