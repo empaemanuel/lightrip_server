@@ -100,10 +100,10 @@ public class RouteController {
                 System.err.println("Final route found!");
                 return finalRoute;
             } else {
-                System.err.println("CheckedNodes size: "+checkedNodes.size());
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) { //Iterate through all paths the last in the list can take.
                     if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(e.getOtherNode(latest))) {
                         checkedNodes.add(e.getOtherNode(latest));
+                        System.err.println("CheckedNodes size: "+checkedNodes.size());
                         System.err.println("new edge found: "+ e.toString());
                         ArrayList<Node> path = new ArrayList<>(); //Create a new list
                         path.addAll(n.getNodes()); //Add all nodes from previous list
