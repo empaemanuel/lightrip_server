@@ -92,6 +92,7 @@ public class RouteController {
         System.err.println("frontier size: "+ frontier.size());
 
         while(!frontier.isEmpty()) {  //While queue still has streets to check
+            System.err.println("Frontier size: "+ frontier.size());
             NodeContainer n = frontier.poll(); //Check the first list, i.e. the one that has the shortest traversal so far and remove from queue.
             Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
             System.err.println("latest node: "+latest);
@@ -113,7 +114,7 @@ public class RouteController {
                 }
             }
         }
-
+        System.err.println("No path found:(");
         return finalRoute; //If here, there is no path.
     }
 
