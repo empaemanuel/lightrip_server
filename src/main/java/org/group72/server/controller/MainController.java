@@ -3,7 +3,9 @@ package org.group72.server.controller;
 import javafx.scene.effect.Light;
 import org.group72.server.model.Greeting;
 import org.group72.server.model.LightNode;
+import org.group72.server.script.EdgeScript;
 import org.group72.server.script.LightScript;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +30,23 @@ public class MainController {
         return "Greetings from lightrip server!";
     }
 
+
+    @Autowired
+    EdgeScript es;
+
     @RequestMapping(path="/loadEdges")
     public @ResponseBody String loadEdges(){
-        LightScript ls = new LightScript();
-        ArrayList<LightNode> lightNodes = ls.load();
-        for(LightNode ln : lightNodes){
-            System.out.println("==" + ln.getLatitude() + ", " + ln.getLongitude() + ".");
-        }
+
+        es.loadEdgesAndNodes("/Users/earth/Desktop/lightrip/lightrip_server/src/main/resources/200602rutter.list");
+        return "done!";
+    }
+
+    @Autowired
+    LightScript ls;
+    @RequestMapping(path="/loadLights")
+    public @ResponseBody String loadLights(){
+
+        ls.load("/Users/earth/Desktop/lightrip/lightrip_server/src/main/resources/200602belysning.list");
         return "done!";
     }
 }
