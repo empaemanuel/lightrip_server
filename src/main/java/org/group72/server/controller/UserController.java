@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping(path="/specified")
     public @ResponseBody User getUser(@RequestParam Integer id){
-        if(userRepository.getUserWithID(id)!= null) {
+        if(userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get();
         }
         return null;

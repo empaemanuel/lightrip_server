@@ -1,7 +1,6 @@
 package org.group72.server.model;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {

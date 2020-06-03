@@ -14,6 +14,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository interface to fetch location nodes from the database.
+ */
+
 @Repository
 public interface NodeRepository extends CrudRepository<Node, Double> {
 

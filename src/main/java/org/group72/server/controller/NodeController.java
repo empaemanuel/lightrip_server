@@ -1,9 +1,7 @@
 package org.group72.server.controller;
 
 
-import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
-import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

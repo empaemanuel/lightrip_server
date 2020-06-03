@@ -11,6 +11,11 @@ import java.util.List;
 
 // This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 // CRUD refers Create, Read, Update, Delete
+
+/**
+ * Repository interface for getting lightnodes from the database.
+ */
+
 @Repository
 public interface LightRepository extends CrudRepository<LightNode, Double> {
 
