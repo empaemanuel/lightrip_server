@@ -1,6 +1,7 @@
 package org.group72.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.FileInputStream;
@@ -41,6 +43,14 @@ public class EdgeController {
         }
 
         return "Distance weight updated, run forrest run";
+    }
+
+    @RequestMapping(path="/getByLight")
+    public @ResponseBody JSONObject getEdgesByLight(@RequestParam int lightWeight){
+        List<Edge> edgeList = edgeRepository.getEdgesBelowLightWeight(lightWeight);
+        JSONObject jo = new JSONObject();
+        jo.appendField("Edges: ", edgeList);
+        return jo;
     }
 
     @RequestMapping(path="/updateEdgeLights")

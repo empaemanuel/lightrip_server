@@ -154,7 +154,7 @@ public class RouteController {
             }
             if(startNodeFound && endNodeFound)
                 nodesFound = true;
-            searchRadius += 2;
+            searchRadius += 0.0002;
             loopsDone++;
             if(loopsDone==5&&!nodesFound)
                 return null;
@@ -203,6 +203,7 @@ public class RouteController {
             Node previous = null;
             for(Node n : nodes){
                 if(previous != null){
+                    System.err.println(previous.getLatitude()+" - "+ previous.getLongitude()+" - "+ n.getLatitude()+ " - "+ n.getLongitude());
                     finalDistance += edgeRepository.getEdge(previous.getLatitude(), previous.getLongitude(), n.getLatitude(), n.getLongitude()).getDistanceWeight();
                 }
                 previous = n;

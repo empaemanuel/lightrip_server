@@ -67,5 +67,8 @@ public interface EdgeRepository extends CrudRepository<Edge, Integer> {
             "and e.node2.longitude = :longitude) ")
     List<Edge> getEdgesBy(@Param("latitude") double latitude, @Param("longitude") double longitude);
 
+    @Query("SELECT e FROM Edge e WHERE e.lightWeight < :lightWeight")
+    List<Edge> getEdgesBelowLightWeight(@Param("lightWeight") int lightWeight);
+
 
 }
