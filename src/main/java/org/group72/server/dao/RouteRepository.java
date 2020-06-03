@@ -6,6 +6,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository interface to fetch saved routes belonging to a specific user.
+ */
+
 @Repository
 public interface RouteRepository extends CrudRepository<Route, Integer> {
 

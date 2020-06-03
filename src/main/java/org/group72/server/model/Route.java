@@ -20,12 +20,6 @@ public class Route {
 
     private Integer ownedBy;
 
-
-    /*private JSONArray MaxLightRoute;
-    private JSONArray MedLightRoute;
-    private JSONArray MinLightRoute;*/
-
-
     public Route(){
     }
 
@@ -45,18 +39,6 @@ public class Route {
     public String toString(){
         return "ID:"+getId() + ","+"OwnedBy:"+ getOwnedBy();
     }
-
-    /*public JSONArray getMaxLightRoute() {
-        return MaxLightRoute;
-    }
-
-    public JSONArray getMedLightRoute() {
-        return MedLightRoute;
-    }
-
-    public JSONArray getMinLightRoute() {
-        return MinLightRoute;
-    }*/
 
 
 }

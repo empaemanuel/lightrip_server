@@ -1,25 +1,17 @@
 package org.group72.server.controller;
-import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.group72.server.dao.ConnectionsRepository;
 import org.group72.server.dao.EdgeRepository;
 import org.group72.server.dao.NodeRepository;
-import org.group72.server.model.Connections;
 import org.group72.server.model.Edge;
 import org.group72.server.model.Node;
-import org.group72.server.model.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.swing.plaf.synth.SynthScrollBarUI;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -109,8 +101,8 @@ public class RouteController {
                         checkedNodes.add(e.getOtherNode(latest));
                         System.err.println("CheckedNodes size: "+checkedNodes.size());
                         System.err.println("new edge found: "+ e.toString());
-                        ArrayList<Node> path = new ArrayList<>(); //Create a new list
-                        path.addAll(n.getNodes()); //Add all nodes from previous list
+                        //Create a new list
+                        ArrayList<Node> path = new ArrayList<>(n.getNodes()); //Add all nodes from previous list
                         path.add(e.getOtherNode(latest)); //And add the new one we found
                         frontier.add(new NodeContainer(path)); //Add to queue
                     }
@@ -160,7 +152,7 @@ public class RouteController {
                 return null;
         }
 
-        ArrayList<Node> nodeList = new ArrayList<Node>();
+        ArrayList<Node> nodeList = new ArrayList<>();
         nodeList.add(startNode);
         nodeList.add(endNode);
         return nodeList;
@@ -239,7 +231,6 @@ public class RouteController {
 
         /**
          * Override of the compareTo() method. Compares the total traversed distance between two nodeContainer objects.
-         *
          * @param nodeContainer
          * @return
          */

@@ -4,7 +4,6 @@ package org.group72.server.model;
 import java.util.Objects;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 
 @Entity
 @IdClass(NodeKey.class)
@@ -15,8 +14,6 @@ public class Node {
 
     @Id
     private double longitude;
-
-    private int lightLevel;
 
     public Node() {
     }
@@ -37,10 +34,6 @@ public class Node {
     @Override
     public int hashCode() {
         return Objects.hash(latitude, longitude);
-    }
-
-    public int getLightLevel() {
-        return lightLevel;
     }
 
     @Override
