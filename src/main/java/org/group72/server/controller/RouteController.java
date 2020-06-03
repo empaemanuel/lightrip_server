@@ -94,7 +94,7 @@ public class RouteController {
                     if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(foundNode)) {
                         if(foundNode.equals(endStreet)){
                             finalRoute.add(currentStreet);
-                            finalRoute = n.getNodes();
+                            finalRoute.addAll(n.getNodes());
                             finalRoute.add(foundNode);
                             finalRoute.add(endStreet);
                             System.err.println("Final route found!");
