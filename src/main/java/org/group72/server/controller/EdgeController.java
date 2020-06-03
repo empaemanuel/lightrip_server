@@ -24,15 +24,25 @@ import java.util.Map;
 public class EdgeController {
 
     @Autowired
-    private EdgeRepository edgeRepository;
+    private EdgeRepository edgeRepository;  //repo handling edges
 
 
+    /**
+     * Finds and returns all edges from our database
+     *
+     * @return All edges from database
+     */
     @GetMapping(path="/allEdges")
     public @ResponseBody Iterable<Edge> getAllEdges() {
         // This returns a JSON or XML with the users
         return edgeRepository.findAll();
     }
 
+    /**
+     * Iterate through all edges in database to calculate and update each ones distanceWeight
+     *
+     * @return message to know the task was successful
+     */
     @RequestMapping(path="/updateEdgeDistance")
     public @ResponseBody String updateEdgeDistance(){
         int distanceWeight;
@@ -45,6 +55,12 @@ public class EdgeController {
         return "Distance weight updated, run forrest run";
     }
 
+    /**
+     * Find and return all edges from database below a certain lightWeight
+     *
+     * @param lightWeight retrieve all edges with a lightWeight value below this value
+     * @return All edges below a certain lightWeight
+     */
     @RequestMapping(path="/getByLight")
     public @ResponseBody JSONObject getEdgesByLight(@RequestParam int lightWeight){
         List<Edge> edgeList = edgeRepository.getEdgesBelowLightWeight(lightWeight);
@@ -53,6 +69,11 @@ public class EdgeController {
         return jo;
     }
 
+    /**
+     * Iterate through all edges in database to calculate and update each ones lightWeight using json file containing all lightNodes
+     *
+     * @return message to know the task was successful
+     */
     @RequestMapping(path="/updateEdgeLights")
     public @ResponseBody String updateEdgeLights(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -79,11 +100,32 @@ public class EdgeController {
         return "Edges updated with light! Let there be light!";
     }
 
+    /**
+     * Get the distance from an edge and scale it down to make it more manageable before returning it
+     *
+     * @return the distanceWeight of the edge
+     */
     private int getDistanceWeight(Edge e){
         double distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude());
-        return (int)Math.ceil(distance/5)+1;
+        return (int)Math.ceil(distance/5);
     }
 
+
+    /**
+     * Calculates the lightWeight for a given node.
+     * First find the coordinates for both nodes making up the edge, then
+     * find the distance between the nodes. After that decide how many "rectangles"
+     * is needed based off the distance. Next find the coordinates of each rectangle needed
+     * between the 2 nodes. After that iterate through each point and find coordinates
+     * to "draw" a rectangle around it with a given width and height. Using this rectangle
+     * we can now find all lightNodes existing inside each of these rectangles and save the
+     * amount found. Lastly before returning turn the number of lightNodes into an integer 1-10
+     * using mathy math, lower number means higher density of lightNodes around the edge
+     *
+     * @param e The edge which we calculate the lightWeight for
+     * @param lightList list containing all LightNodes
+     * @return the calculated lightWeight
+     */
     private int getLightWeight(Edge e, List<LightNode> lightList){
         int sumOfLights = 0;
         double tempMetersInLatLong = 0.0003;
