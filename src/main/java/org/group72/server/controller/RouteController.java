@@ -114,10 +114,12 @@ public class RouteController {
     }
 
     /**
+     * Takes start and end nodes which (probably) don't exist in our database, this
+     * method finds nearby nodes that do exist in our database to replace them with.
      *
-     * @param startNode
-     * @param endNode
-     * @return
+     * @param startNode node which we need to find a replacement for in our database
+     * @param endNode node which we need to find a replacement for in our database
+     * @return List containing new nodes to replace startNode and endNode with
      */
 
     private List<Node> getClosestNode(Node startNode, Node endNode){
@@ -157,7 +159,6 @@ public class RouteController {
         nodeList.add(endNode);
         return nodeList;
     }
-
     @GetMapping(path = "/showConnectionsDemo")
     public @ResponseBody JSONObject getConnections(@RequestParam(value = "edgeId", defaultValue = "4108") int edgeId) {
         JSONObject jo = new JSONObject();

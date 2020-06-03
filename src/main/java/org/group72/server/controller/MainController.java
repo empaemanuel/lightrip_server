@@ -24,6 +24,7 @@ public class MainController {
     public @ResponseBody Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
+
     @GetMapping(path="/")
     public @ResponseBody String homePage() {
         return "Greetings from lightrip server!";
@@ -33,6 +34,11 @@ public class MainController {
     @Autowired
     EdgeScript es;
 
+
+    /**
+     * Load all edges from file into database
+     *
+     */
     @RequestMapping(path="/loadEdges")
     public @ResponseBody String loadEdges(){
         //Se till att filformatet är .list och lägg till hela filvägen nedan.
@@ -41,6 +47,10 @@ public class MainController {
         return "done!";
     }
 
+    /**
+     * Load all lightNodes from file into database
+     *
+     */
     @Autowired
     LightScript ls;
     @RequestMapping(path="/loadLights")
