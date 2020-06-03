@@ -39,9 +39,6 @@ public class RouteController {
     @Autowired
     private ConnectionsRepository connectionsRepository;
 
-
-    //private Set<Edge> checkedStreets = new HashSet<>();
-
     /**
      * Http call to generate a route between the gives nodes with regard to
      * minimum required light weight
@@ -72,12 +69,17 @@ public class RouteController {
 
     /**
      * This method performs a breadth first search and saves every step of each path and removes the ancestor list when all descendants are added.
-     * A priority queue makes sure that the current path checked is always the shortest so that when it does find the final destination it has followed the shortest path
+     * A priority queue makes sure that the current path checked is always the shortest so that when it does find the final destination it has followed the shortest path.
+     * If the shortest current path is not at the end point, it will create alternate paths for every edge the last node has, remove the current shortest route as it is checked, and then add
+     * all the alternate paths to the queue. The queue sorts immediately and you repeat the process until either the route is found or the queue is empty. To ensure that repetition
+     * or long alternate paths doesn't happen, the method keeps track of which nodes are checked, then updates it and excludes them in every iteration.
      *
      * @param currentStreet
      * @param endStreet
      * @param lightLevel
      * @return finalRoute
+     *
+     * @author Magnus P.
      */
 
     public ArrayList<Node> findRoute(Node currentStreet, Node endStreet, int lightLevel){
@@ -119,36 +121,12 @@ public class RouteController {
         return finalRoute; //If here, there is no path.
     }
 
-    /*public ArrayList<Node> findParallelRoute(Node currentStreet, Node endStreet, int lightLevel){
-        ArrayList<Node> finalRoute = new ArrayList<>(); //The final list of nodes that will be our path
-        HashSet<Node> checkedNodes = new HashSet<>(); //The list of nodes we have already been on and therefore already found the shortest path to
-        PriorityQueue<NodeContainer> frontier = new PriorityQueue<>(); //A queue of node lists which orders by how long in distance each list is
-        ArrayList<Node> initList = new ArrayList<>(); //Initial list to start the queue with
-
-        initList.add(currentStreet);     //Initial list gets the first street
-        frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
-
-        while(!frontier.isEmpty()) {  //While queue still has streets to check
-            NodeContainer n = frontier.peek(); //Check the first list, i.e. the one that has the shortest traversal so far.
-            Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
-            if (latest.equals(endStreet)) {  //If the latest node in the list is the end street, we are done and can return the list.
-                finalRoute = n.getNodes();
-                return finalRoute;
-            } else {
-                checkedNodes.add(latest); //If not done, mark the latest in the list as checked
-                List<Edge> edges = edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude());
-                edges.parallelStream().forEach(e -> {
-                    ArrayList<Node> path = new ArrayList<>(); //Create a new list
-                    path.addAll(n.getNodes()); //Add all nodes from previous list
-                    path.add(e.getOtherNode(latest)); //And add the new one we found
-                    frontier.add(new NodeContainer(path)); //Add to queue
-                });
-            }
-            frontier.remove(n); //After we've created paths for all variations of the latest, we can remove the ancestor
-        }
-
-        return finalRoute; //If here, there is no path.
-    }*/
+    /**
+     *
+     * @param startNode
+     * @param endNode
+     * @return
+     */
 
     private List<Node> getClosestNode(Node startNode, Node endNode){
         boolean nodesFound = false;
@@ -188,82 +166,6 @@ public class RouteController {
         return nodeList;
     }
 
-
-
-    /*public ArrayList<Edge> findRoute(Node currentStreet, Node endStreet, int lightLevel){
-        ArrayList<Edge> returnedRoute = new ArrayList<>();
-        ArrayList<Edge> calculatedRoute = new ArrayList<>();
-        ArrayList<Edge> edgeQueue = new ArrayList<>();
-        for(Edge e : edgeRepository.getEdgesBy(currentStreet.getLatitude(), currentStreet.getLongitude())){
-            if(!checkedStreets.contains(e)){
-                edgeQueue.add(e);
-            }
-        }
-        for(Edge e : edgeQueue) {
-            checkedStreets.add(e);
-                ArrayList<Edge> suggestion = new ArrayList<>();
-                if (e.getOtherNode(currentStreet).equals(endStreet)) {
-                    suggestion.add(e);
-                    return suggestion;
-                }else{
-                    if (e.getLightWeight() <= lightLevel) {
-                        ArrayList<Edge> theory = findRoute(e.getOtherNode(currentStreet), endStreet, lightLevel);
-                        if (!theory.isEmpty()) {
-                            suggestion.add(e);
-                            suggestion.addAll(theory);
-                            int distance = 0;
-                            int finalDistance = 0;
-                            for (Edge d : suggestion) {
-                                distance += d.getDistanceWeight();
-                            }
-                            for (Edge d : calculatedRoute)
-                                finalDistance += d.getDistanceWeight();
-                            if (finalDistance == 0 || finalDistance > distance) {
-                                calculatedRoute = suggestion;
-                            }
-                        }
-                    }
-                }
-                returnedRoute = calculatedRoute;
-            }
-        return returnedRoute;
-    }
-
-    public ArrayList<Node> getNodeRoute(Node startNode, ArrayList<Edge> edges){
-        ArrayList<Node> finalRoute = new ArrayList<>();
-        finalRoute.add(startNode);
-        for(Edge e : edges){
-            if(finalRoute.contains(e.getNode1())){
-                finalRoute.add(e.getNode2());
-            }else{
-                finalRoute.add(e.getNode1());
-            }
-        }
-        return finalRoute;
-    }*/
-
-    /*public @ResponseBody JSONObject demo(){
-        JSONObject response = new JSONObject();
-        response.appendField("user" , "The ID token can be sent here");
-        JSONArray route = new JSONArray();
-        //59.3121417  18.0911303 -> 59.3123095 18.0912094
-        Node n = nodeRepository.getNode(59.3121417,18.0911303);
-        route.appendElement(n);
-        n = nodeRepository.getNode(59.3123095, 18.0912094);
-        route.appendElement(n);
-        n = nodeRepository.getNode(59.3126612, 18.0913751);
-        route.appendElement(n);
-        n = nodeRepository.getNode(59.3126381, 18.0915173);
-        route.appendElement(n);
-        n = nodeRepository.getNode(59.312634, 18.0916134);
-        route.appendElement(n);
-        n = nodeRepository.getNode(59.3126498, 18.0916942);
-        route.appendElement(n);
-        response.appendField("route", route);
-        response.appendField("distance", 130);
-        return response;
-    }*/
-
     @GetMapping(path = "/showConnectionsDemo")
     public @ResponseBody JSONObject getConnections(@RequestParam(value = "edgeId", defaultValue = "4108") int edgeId) {
         JSONObject jo = new JSONObject();
@@ -271,111 +173,31 @@ public class RouteController {
         return jo;
     }
 
-
-//    @GetMapping(path="/connectEdges")
-//    public @ResponseBody String connectEdges() {
-//        // This returns a JSON or XML with the users
-//    	populateDatabase();
-//        return "arrays";
-//    }
-
     /**
-     * SHOULD BE REMOVED OR HIDDEN BEFORE RELEASE.
-     * Script used for populating the database with edges.
-     * @return simple message to indicate when the script is done.
+     * The class below stores an ArrayList of Nodes along with a integer for the distance the nodes traverse in total.
+     * This assures that the list of nodes maintain their given order when we return the route. The class implements Comparable
+     * so that the queue in the findRoute() method knows how to order the objects.
+     *
+     * @author Magnus P.
      */
-//    @GetMapping(path="/populate")
-//    public @ResponseBody String populate() {
-//        populateDatabase();
-//        return "done";
-//    }
-
-    private void populateDatabase(){
-        String filePath = "/Users/idaso/documents/vitaberglinjer.list";
-
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine();
-            while(line != null){
-                extractPositionsFromJsonListVersion(line);
-                line = reader.readLine(); //moves to next line
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Extracts a list of geo positions from single JSON structure.
-     */
-
-
-    private void extractPositionsFromJson(String json){
-        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
-
-        Node prev = null;
-        for(int i=0; i < points.size(); i++) {
-            JSONArray point = (JSONArray) points.get(i);
-            double longitude = (double) point.get(0);
-            double latitude = (double) point.get(1);
-
-            Node n = new Node(latitude,longitude);
-            nodeRepository.save(n);
-            if(prev!=null){
-                Edge e = new Edge(prev, n);
-                edgeRepository.save(e);
-            }
-            prev = n;
-        }
-    }
-
-
-
-
-
-
-    private void extractPositionsFromJsonListVersion(String json){
-        JSONArray points = JsonPath.read(json, "$.geometry.coordinates");
-
-        Node prev = null;
-        for(int i=0; i < points.size(); i++) {
-            JSONArray point = (JSONArray) points.get(i);
-            double longitude = (double) point.get(0);
-            double latitude = (double) point.get(1);
-
-            Node n = new Node(latitude,longitude);
-            if(prev!=null){
-                Edge e = edgeRepository.getEdge(n.getLatitude(), n.getLongitude(), prev.getLatitude(), prev.getLongitude());
-
-                /* Looking through Edges and connecting edges that share a node.
-                 * Adding shared nodes to table
-                 * @author Ida
-                 */
-                for (Edge oldEdge : edgeRepository.findAll()) {
-                    if (oldEdge.getNode1().equals(e.getNode1()) && !(oldEdge.getNode2().equals(e.getNode2()))//
-                            && !(connectionsRepository.getConnections(e.getId()).contains(oldEdge.getId()))) {
-                        Connections c = new Connections(e.getId(), oldEdge.getId());
-                        connectionsRepository.save(c);
-                    }
-                }
-            }
-            prev = n;
-        }
-    }
-
 
     class NodeContainer implements Comparable<NodeContainer>{
         ArrayList<Node> nodes;
         private Integer finalDistance;
-
-
 
         NodeContainer(ArrayList<Node> nodes){
             this.nodes = nodes;
             setFinalDistance();
         }
 
+        /**
+         * Method to calculate traversed distance. It iterates through every node, keeps track of which was the previous node,
+         * and if there is a previous node it gets the edge between those nodes from the edge repository and adds it's distance
+         * weight to the final distance.
+         *
+         * @param
+         * @return
+         */
         private void setFinalDistance() {
             finalDistance = 0;
             Node previous = null;
@@ -389,11 +211,6 @@ public class RouteController {
 
         public Integer getFinalDistance() {
             return finalDistance;
-        }
-
-        public void addNode(Node node){
-            nodes.add(node);
-            setFinalDistance();
         }
 
         public ArrayList<Node> getNodes() {
@@ -419,15 +236,17 @@ public class RouteController {
             return Objects.hashCode(nodes);
         }
 
+        /**
+         * Override of the compareTo() method. Compares the total traversed distance between two nodeContainer objects.
+         *
+         * @param nodeContainer
+         * @return
+         */
+
         @Override
         public int compareTo(NodeContainer nodeContainer){
             return finalDistance.compareTo(nodeContainer.getFinalDistance());
         }
     }
-
-
-
-
-
 }
 
