@@ -129,7 +129,7 @@ public class RouteController {
         double searchRadius = 0.0002;
         int loopsDone = 0;
 
-        while(!nodesFound && loopsDone<5) {
+        while(!nodesFound && loopsDone<20) {
             for (Node n : nodeRepository.findAll()) {
                 if(n.getLatitude() < startNode.getLatitude()+searchRadius && n.getLatitude()> startNode.getLatitude()-searchRadius && n.getLongitude() < startNode.getLongitude()+searchRadius && n.getLongitude() > startNode.getLongitude()-searchRadius && !startNodeFound){
                     startNodeFound = true;
