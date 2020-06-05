@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class for undirected edges. Each edge has two positions A and B which should have no internal order.

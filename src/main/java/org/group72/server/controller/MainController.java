@@ -1,7 +1,6 @@
 package org.group72.server.controller;
 
 import org.group72.server.model.Greeting;
-import org.group72.server.model.LightNode;
 import org.group72.server.script.EdgeScript;
 import org.group72.server.script.LightScript;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller

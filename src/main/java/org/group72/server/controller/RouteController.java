@@ -82,13 +82,10 @@ public class RouteController {
 
         initList.add(currentStreet); //Initial list gets the first street
         frontier.add(new NodeContainer(initList)); //Queue gets a list with only the first street
-        System.err.println("initList size: "+ initList.size());
-        System.err.println("frontier size: "+ frontier.size());
 
         while(!frontier.isEmpty()) {  //While queue still has streets to check
             NodeContainer n = frontier.poll(); //Check the first list, i.e. the one that has the shortest traversal so far and remove from queue.
             Node latest = n.getNodes().get(n.getNodes().size() - 1); //Get the latest node in the list
-            System.err.println("latest node: " + latest);
                 for (Edge e : edgeRepository.getEdgesBy(latest.getLatitude(), latest.getLongitude())) {
                     Node foundNode = e.getOtherNode(latest);//Iterate through all paths the last in the list can take.
                     if (e.getLightWeight() <= lightLevel && !checkedNodes.contains(foundNode)) {
@@ -97,12 +94,9 @@ public class RouteController {
                             finalRoute.addAll(n.getNodes());
                             finalRoute.add(foundNode);
                             finalRoute.add(endStreet);
-                            System.err.println("Final route found!");
                             return finalRoute;
                         }
                         checkedNodes.add(e.getOtherNode(latest));
-                        System.err.println("CheckedNodes size: "+checkedNodes.size());
-                        System.err.println("new edge found: "+ e.toString());
                         //Create a new list
                         ArrayList<Node> path = new ArrayList<>(n.getNodes()); //Add all nodes from previous list
                         path.add(e.getOtherNode(latest)); //And add the new one we found
@@ -131,31 +125,25 @@ public class RouteController {
         double searchRadius = 0.0002;
         int loopsDone = 0;
 
-        while(!nodesFound && loopsDone<20) {
-            for (Node n : nodeRepository.findAll()) {
+        while(!nodesFound && loopsDone<20) { //while we havent found both nodes and havent done 20 loops
+            for (Node n : nodeRepository.findAll()) { //for every node in database
                 if(n.getLatitude() < startNode.getLatitude()+searchRadius && n.getLatitude()> startNode.getLatitude()-searchRadius && n.getLongitude() < startNode.getLongitude()+searchRadius && n.getLongitude() > startNode.getLongitude()-searchRadius && !startNodeFound){
                     startNodeFound = true;
-                    System.err.println(startNode.toString());
                     startNode = n;
-                    System.err.println("StartNode Found!");
-                    System.err.println(n.toString());
                 }
                 if(n.getLatitude() < endNode.getLatitude()+searchRadius && n.getLatitude()> endNode.getLatitude()-searchRadius && n.getLongitude() < endNode.getLongitude()+searchRadius && n.getLongitude() > endNode.getLongitude()-searchRadius && !endNodeFound){
                     endNodeFound = true;
-                    System.err.println(endNode.toString());
                     endNode = n;
-                    System.err.println("EndNode Found!");
-                    System.err.println(n.toString());
                 }
             }
             if(startNodeFound && endNodeFound)
                 nodesFound = true;
-            searchRadius += 0.0002;
+            searchRadius += 0.0002; //increase search radius after every loop
             loopsDone++;
-            if(loopsDone==5&&!nodesFound)
-                return null;
         }
 
+        if(!nodesFound) //if nodes not found
+            return null;
         ArrayList<Node> nodeList = new ArrayList<>();
         nodeList.add(startNode);
         nodeList.add(endNode);
@@ -198,7 +186,6 @@ public class RouteController {
             Node previous = null;
             for(Node n : nodes){
                 if(previous != null){
-                    System.err.println(previous.getLatitude()+" - "+ previous.getLongitude()+" - "+ n.getLatitude()+ " - "+ n.getLongitude());
                     finalDistance += edgeRepository.getEdge(previous.getLatitude(), previous.getLongitude(), n.getLatitude(), n.getLongitude()).getDistanceWeight();
                 }
                 previous = n;

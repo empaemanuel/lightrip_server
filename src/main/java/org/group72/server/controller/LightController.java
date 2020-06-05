@@ -1,14 +1,11 @@
 package org.group72.server.controller;
 
-import net.minidev.json.JSONObject;
 import org.group72.server.dao.LightRepository;
 import org.group72.server.model.LightNode;
-import org.group72.server.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
  * This class defines the API for handling CRUD requests

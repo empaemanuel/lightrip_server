@@ -3,7 +3,6 @@ package org.group72.server.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.group72.server.dao.EdgeRepository;
-import org.group72.server.dao.NodeRepository;
 import org.group72.server.model.Edge;
 import org.group72.server.model.LightNode;
 import org.group72.server.model.Node;
@@ -48,7 +47,6 @@ public class EdgeController {
         int distanceWeight;
         for(Edge e: edgeRepository.findAll()){
             distanceWeight = getDistanceWeight(e);
-            System.err.println("DistanceWeight: "+distanceWeight);
             edgeRepository.setEdgeDistanceWeight(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude(), distanceWeight);
         }
 
@@ -85,14 +83,11 @@ public class EdgeController {
             return e.getMessage();
         }
         for(int i = 0; i<inputList.size(); i++) {
-            System.err.println(inputList.get(i).get("latitude")+"-" +inputList.get(i).get("longitude"));
-
             lightList.add(new LightNode(Double.parseDouble(inputList.get(i).get("latitude")), Double.parseDouble(inputList.get(i).get("longitude"))));
         }
         int lightWeight = 0;
         for (Edge e: edgeRepository.findAll()) {
             lightWeight = getLightWeight(e, lightList);
-            System.err.println(lightWeight);
             edgeRepository.setEdgeLightWeight(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude(), lightWeight);
         }
 
@@ -131,7 +126,6 @@ public class EdgeController {
         double tempMetersInLatLong = 0.0003;
         double metersPerRectangle = 10;
         double distance = e.calculateDistance(e.getNode1().getLatitude(), e.getNode1().getLongitude(), e.getNode2().getLatitude(), e.getNode2().getLongitude()); // get total length between the 2 nodes
-        System.err.println("Distance: " + distance);
         double rectanglesNeeded = (distance/metersPerRectangle)+1; //1 rectangle for every 10 meters, not sure if this is good what if the distance is not dividable by 10?
         double sizeOfLastRectangle = rectanglesNeeded - Math.floor(rectanglesNeeded);
         //next figure out where the place the rectangles - we need to figure out the path between the 2 nodes and place checkpoints every 10 meters
@@ -154,15 +148,13 @@ public class EdgeController {
                 node1 = new Node(pointList.get(j).getLatitude() - tempMetersInLatLong, pointList.get(j).getLongitude() - tempMetersInLatLong);//bottom left corner of rectangle
                 node2 = new Node(pointList.get(j).getLatitude() + tempMetersInLatLong, pointList.get(j).getLongitude() + tempMetersInLatLong);//top right corner of rectangle
             }
-            //System.err.println(node1.getLatitude()+""+ node1.getLongitude()+"HEREISNODE");
-            //sumOfLights += lightController.getSpecificLights(node1, node2).size();  //send sql request for lights between corners of rectangle, check how many lights found and add to the sum of lights found
             for(LightNode l : lightList){
                 if(l.getLatitude()>node1.getLatitude() && l.getLatitude()<node2.getLatitude() && l.getLongitude()> node1.getLongitude() && l.getLongitude()<node2.getLongitude()){
                     sumOfLights++;
                 }
             }
         }
-        int returnWeight = Math.abs((int)Math.round(Math.log10(((Math.pow(sumOfLights, 2)/2)/rectanglesNeeded)+1)*5)-10); //complicated mathy things happening, dont worry about it, unless it breaks then we fucked
+        int returnWeight = Math.abs((int)Math.round(Math.log10(((Math.pow(sumOfLights, 2)/2)/rectanglesNeeded)+1)*5)-10); //complicated mathy things happening, dont worry about it, unless it breaks then we fucked (log10(x) x->infinity ~=2, 2*5 = 10 => 10 - 10 = 0 => maximum amount of light, 0 lights = x atleast 1 => log10(1) = 0, 0-10 = -10, abs(-10) = 10 = minimun amount of light
         if(returnWeight == 0) // no 0's allowed
             returnWeight++;
         return returnWeight;
